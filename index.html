@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<!-- Town Guide — Blood on the Clocktower. Full version history moved out of this file as of v1.15.13 — see botc-player-guide-changelog.txt in this same folder. -->
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Town Guide — Blood on the Clocktower (v1.15.27)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cinzel+Decorative:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0f0e17;
+  --panel:#191726;
+  --panel2:#211f33;
+  --panel3:#2a2740;
+  --hairline:#3a3654;
+  --cream:#eee6d3;
+  --cream-dim:#b7ae9a;
+  --gold:#c9a227;
+  --gold-soft:#e8cf7a;
+  --townsfolk:#4d7ea8;
+  --townsfolk-soft:#a9c6df;
+  --outsider:#4d9a83;
+  --outsider-soft:#a6d8c8;
+  --minion:#c96a34;
+  --minion-soft:#e8b78d;
+  --demon:#9c2b3c;
+  --demon-soft:#e0a3ad;
+  --ed-tb:#d6455a;
+  --ed-sv:#9163d4;
+  --ed-bmr:#dbb939;
+  --ed-all:#d9822b;
+  --fan:#d1539e;
+  --house:#4a90d9;
+  --success:#3fa354;
+  --success-soft:#7ed492;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:radial-gradient(ellipse at top, #201d33 0%, var(--ink) 55%), var(--ink);
+  color:var(--cream);
+  font-family:'Inter',system-ui,sans-serif;
+  min-height:100vh;
+  padding-bottom:40px;
+  -webkit-tap-highlight-color:transparent;
+}
+h1,h2,h3{font-family:'Cinzel',serif; letter-spacing:.03em;}
+
+header.app{
+  position:sticky; top:0; z-index:40;
+  background:linear-gradient(180deg, rgba(15,14,23,.98), rgba(15,14,23,.94));
+  border-bottom:1px solid var(--hairline);
+  padding:14px 16px 12px;
+  backdrop-filter:blur(6px);
+}
+header.app h1{
+  font-size:19px; margin:0 0 12px; color:var(--gold-soft);
+  display:flex; align-items:center; gap:8px;
+}
+header.app h1 .eye{font-size:20px;}
+.version-tag{
+  font-family:'Inter',sans-serif; font-size:10px; font-weight:700; color:var(--cream-dim);
+  background:var(--panel2); border:1px solid var(--hairline); padding:2px 7px; border-radius:8px;
+  vertical-align:middle; letter-spacing:.02em;
+}
+
+.edition-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;}
+.chip-select{
+  flex:1; min-width:96px; text-align:center;
+  background:var(--panel2); border:1.5px solid var(--hairline); color:var(--cream-dim);
+  padding:9px 8px; border-radius:10px; cursor:pointer; font-size:12px; font-weight:600;
+  border-top:3px solid var(--chip-color, var(--hairline));
+}
+.chip-select.active{border-color:var(--chip-color, var(--gold)); border-top-color:var(--chip-color, var(--gold)); color:var(--cream); background:var(--panel3); box-shadow:0 0 0 1px var(--chip-color, var(--gold)) inset;}
+
+/* house rule + fan role toggles - one compact grid, not one card per row */
+.hr-grid{display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:7px; margin-bottom:10px;}
+.hr-mini{
+  background:var(--panel2); border:1px solid var(--hairline); border-radius:10px;
+  padding:8px 9px;
+}
+.hr-mini.on{background:linear-gradient(160deg, rgba(201,162,39,.10), var(--panel2));}
+.hr-mini-top{display:flex; align-items:center; gap:5px; margin-bottom:3px;}
+.hr-mini-emoji{font-size:16px; line-height:1; flex-shrink:0;}
+.hr-mini-name{font-weight:700; font-size:13px; line-height:1.25; flex:1;}
+.hr-mini-desc{font-size:11.5px; color:var(--cream-dim); line-height:1.35; margin-bottom:7px;}
+.hr-mini-switch{
+  width:32px; height:18px; border-radius:10px; background:var(--panel3); border:1.5px solid var(--hairline);
+  position:relative; flex-shrink:0; cursor:pointer; transition:background .15s;
+}
+.hr-mini-switch .knob{
+  position:absolute; top:1.5px; left:1.5px; width:13px; height:13px; border-radius:50%;
+  background:var(--cream-dim); transition:transform .15s, background .15s;
+}
+.hr-mini-switch.on{background:var(--gold); border-color:var(--gold);}
+.hr-mini-switch.on .knob{transform:translateX(14px); background:#1a1710;}
+.hr-mini.locked{opacity:.7;}
+.hr-mini-switch.disabled{cursor:not-allowed; opacity:.5;}
+.hr-mesmerist-flip{
+  display:flex; align-items:flex-start; gap:5px; font-size:10.5px; line-height:1.3;
+  color:var(--cream-dim); margin-top:2px; cursor:pointer;
+}
+.hr-mesmerist-flip input{margin-top:2px; flex-shrink:0;}
+.hr-mesmerist-flip.on{color:var(--gold-soft); font-weight:700; cursor:default;}
+.bulk-row{display:flex; gap:10px; justify-content:flex-end; margin:2px 0 10px;}
+.bulk-btn{
+  background:var(--panel3); border:1.5px solid var(--hairline); color:var(--cream);
+  font-size:13px; font-weight:700; cursor:pointer; padding:8px 16px; border-radius:8px;
+}
+.bulk-btn:hover{border-color:var(--gold-soft); color:var(--gold-soft);}
+.hr-start-btn{
+  width:100%; margin-top:10px; padding:16px; border-radius:12px; border:none;
+  background:var(--success); color:#0b1a0d; font-size:17px; font-weight:800; cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,.35);
+}
+.hr-start-btn:hover{background:var(--success-soft);}
+.hr-locked{
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  background:var(--panel2); border:1px solid var(--hairline); border-radius:10px;
+  padding:11px 14px; margin-bottom:10px; font-size:13px; color:var(--cream-dim);
+}
+.hr-locked button{
+  background:none; border:1px solid var(--hairline); color:var(--gold-soft);
+  border-radius:7px; padding:6px 12px; font-size:12.5px; cursor:pointer; flex-shrink:0;
+}
+.hr-exit-lock{
+  font-size:11px; color:var(--cream-dim); text-decoration:underline; cursor:pointer; flex-shrink:0;
+}
+.custom-role-tag{
+  display:inline-block; font-size:9px; text-transform:uppercase; letter-spacing:.05em; font-weight:800;
+  color:#1a1710; background:var(--fan); padding:1px 6px; border-radius:4px; margin-left:6px; vertical-align:middle;
+}
+.ed-badge{
+  display:inline-block; font-size:8.5px; text-transform:uppercase; letter-spacing:.03em; font-weight:800;
+  color:#1a1710; padding:1px 6px; border-radius:4px; margin-left:6px; vertical-align:middle;
+}
+
+.tab-row{display:flex; gap:8px;}
+.tab-btn{
+  flex:1; text-align:center; padding:10px 8px; border-radius:10px; cursor:pointer;
+  border:1.5px solid var(--hairline); background:var(--panel2); color:var(--cream-dim);
+  font-size:13px; font-weight:700; text-transform:uppercase; letter-spacing:.04em;
+}
+.tab-btn.active{border-color:var(--gold); color:var(--gold-soft); background:var(--panel3);}
+
+main{padding:14px 12px 0; max-width:640px; margin:0 auto;}
+
+.search-row{margin-bottom:12px;}
+.search-row input{
+  width:100%; background:var(--panel2); border:1px solid var(--hairline); color:var(--cream);
+  border-radius:10px; padding:11px 13px; font-size:14px;
+}
+.search-row input::placeholder{color:var(--cream-dim);}
+
+.team-group-title{
+  font-size:11.5px; text-transform:uppercase; letter-spacing:.09em; font-weight:700; margin:18px 0 8px;
+  padding-bottom:5px; border-bottom:1px solid var(--hairline);
+}
+.role-row{
+  display:flex; align-items:center; gap:12px; padding:12px 10px; border-radius:12px; cursor:pointer;
+  background:var(--panel2); border:1px solid var(--hairline); margin-bottom:7px;
+}
+.role-row:active{background:var(--panel3);}
+.role-row .swatch{width:5px; align-self:stretch; border-radius:4px; flex-shrink:0;}
+.role-row .rtext{flex:1; min-width:0;}
+.role-row .rname{font-weight:700; font-size:14.5px;}
+.role-row .rpreview{
+  font-size:11.5px; color:var(--cream-dim); margin-top:2px; line-height:1.35;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.role-row .chev{color:var(--cream-dim); font-size:18px; flex-shrink:0;}
+.empty-note{color:var(--cream-dim); font-size:13px; font-style:italic; padding:20px 4px; text-align:center;}
+
+/* glossary */
+.gloss-group-title{
+  font-size:11.5px; text-transform:uppercase; letter-spacing:.09em; font-weight:700; margin:18px 0 8px;
+  padding-bottom:5px; border-bottom:1px solid var(--hairline); color:var(--gold-soft);
+}
+.gloss-card{
+  background:var(--panel2); border:1px solid var(--hairline); border-radius:12px;
+  padding:12px 14px; margin-bottom:8px;
+}
+.gloss-card .term{font-weight:700; font-size:14px; color:var(--gold-soft); margin-bottom:4px;}
+.gloss-card p{margin:0; font-size:13px; line-height:1.5; color:var(--cream);}
+
+/* keyword highlight */
+mark.kw{
+  background:var(--gold); color:#1a1710; padding:1px 5px; border-radius:4px;
+  font-weight:800; white-space:nowrap;
+}
+
+/* fullscreen role reveal */
+.present-overlay{
+  position:fixed; inset:0; z-index:200; display:flex; flex-direction:column;
+  background:#050409;
+}
+.present-top{padding:14px 16px; display:flex; justify-content:space-between; align-items:center; gap:10px;}
+.info-tabs{display:flex; gap:6px;}
+.info-tab{
+  padding:8px 14px; border-radius:9px; border:1.5px solid var(--hairline); background:var(--panel2);
+  color:var(--cream-dim); font-size:12px; font-weight:700; cursor:pointer;
+}
+.info-tab.active{border-color:var(--gold); color:var(--gold-soft); background:var(--panel3);}
+.present-close{
+  background:var(--panel2); border:1px solid var(--hairline); color:var(--cream-dim);
+  width:36px; height:36px; border-radius:50%; font-size:18px; cursor:pointer; line-height:1; flex-shrink:0;
+}
+.present-content{
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:20px 28px; text-align:center; overflow-y:auto;
+}
+.present-content .p-team{
+  font-size:13px; letter-spacing:.16em; text-transform:uppercase; margin-bottom:14px; color:var(--cream-dim);
+}
+.present-content .p-role{
+  font-family:'Cinzel Decorative',serif; font-size:clamp(26px,8vw,44px); color:var(--gold-soft);
+  margin-bottom:18px; line-height:1.15;
+}
+.present-content .p-msg{
+  font-size:clamp(15px,4.2vw,20px); line-height:1.6; max-width:560px; color:var(--cream);
+}
+.present-bottom{padding:16px; text-align:center; border-top:1px solid var(--hairline);}
+.present-bottom button{
+  background:var(--panel2); border:1px solid var(--hairline); color:var(--cream-dim);
+  padding:11px 26px; border-radius:10px; font-size:13px; cursor:pointer;
+}
+
+.legend{display:flex; justify-content:center; gap:14px; flex-wrap:wrap; margin:22px 0 6px;}
+.legend span{display:inline-flex; align-items:center; gap:5px; font-size:10.5px; color:var(--cream-dim);}
+.legend i{width:10px; height:10px; border-radius:3px; display:inline-block;}
+footer.app{max-width:640px; margin:6px auto 0; padding:10px 16px 0; text-align:center; color:var(--cream-dim); font-size:10.5px; line-height:1.6;}
+</style>
+</head>
+<body>
+
+<header class="app">
+  <h1><span class="eye">📖</span> Town Guide <span class="version-tag">v1.15.26</span></h1>
+  <div class="edition-row" id="editionRow"></div>
+  <div id="houseRuleCard"></div>
+  <div class="tab-row">
+    <div class="tab-btn active" id="tabRoles">Roles</div>
+    <div class="tab-btn" id="tabGlossary">Glossary</div>
+  </div>
+</header>
+
+<main>
+  <div id="rolesView">
+    <div class="search-row"><input type="text" id="roleSearch" placeholder="🔍 Find a role by name…"></div>
+    <div id="roleList"></div>
+  </div>
+  <div id="glossaryView" style="display:none;">
+    <div id="glossaryList"></div>
+  </div>
+
+  <div class="legend">
+    <span><i style="background:var(--townsfolk)"></i>Townsfolk</span>
+    <span><i style="background:var(--outsider)"></i>Outsider</span>
+    <span><i style="background:var(--minion)"></i>Minion</span>
+    <span><i style="background:var(--demon)"></i>Demon</span>
+  </div>
+  <footer class="app">Unofficial fan-made reference for <em>Blood on the Clocktower</em> — not affiliated with or endorsed by The Pandemonium Institute. Ability text is paraphrased for quick reading; ask your Storyteller privately for exact rulings.</footer>
+</main>
+
+<div id="modalRoot"></div>
+
+<script>
+/* =====================================================================
+   TOWN GUIDE — player-facing role reference & glossary
+   Unofficial. Trouble Brewing + Sects & Violets only.
+   ===================================================================== */
+const TEAM_COLOR = { townsfolk:'var(--townsfolk)', outsider:'var(--outsider)', minion:'var(--minion)', demon:'var(--demon)' };
+const TEAM_LABEL = { townsfolk:'Townsfolk', outsider:'Outsider', minion:'Minion', demon:'Demon' };
+
+const ROLES = [
+/* ---------------- TROUBLE BREWING ---------------- */
+{id:'washerwoman', name:'Washerwoman', team:'townsfolk', edition:'tb',
+  ability:'First night: shown 2 players, told that one of them is a specific Townsfolk role.'},
+{id:'librarian', name:'Librarian', team:'townsfolk', edition:'tb',
+  ability:'First night: shown 2 players, told one is a specific Outsider (or that none are in play).'},
+{id:'investigator', name:'Investigator', team:'townsfolk', edition:'tb',
+  ability:'First night: shown 2 players, told one is a specific Minion.'},
+{id:'chef', name:'Chef', team:'townsfolk', edition:'tb',
+  ability:'First night: learns how many pairs of evil players sit next to each other.'},
+{id:'empath', name:'Empath', team:'townsfolk', edition:'tb',
+  ability:'Each night: learns how many of their 2 living neighbours are evil.'},
+{id:'fortuneteller', name:'Fortune Teller', team:'townsfolk', edition:'tb',
+  ability:'Each night: chooses 2 players, learns if either is the Demon. One good player always registers as a "yes" (red herring).'},
+{id:'undertaker', name:'Undertaker', team:'townsfolk', edition:'tb',
+  ability:'Each night except the first: learns which role was executed today.'},
+{id:'monk', name:'Monk', team:'townsfolk', edition:'tb',
+  ability:'Each night except the first: chooses a player (not themself) who is protected from the Demon tonight.'},
+{id:'ravenkeeper', name:'Ravenkeeper', team:'townsfolk', edition:'tb',
+  ability:'If killed at night, wakes immediately, chooses a player, and learns their role.'},
+{id:'virgin', name:'Virgin', team:'townsfolk', edition:'tb',
+  ability:'The first time nominated, if the nominator is a Townsfolk, that nominator is executed immediately — no vote.'},
+{id:'slayer', name:'Slayer', team:'townsfolk', edition:'tb',
+  ability:'Once per game, by day, may publicly name a player — if that player is the Demon, they die.'},
+{id:'soldier', name:'Soldier', team:'townsfolk', edition:'tb',
+  ability:'Cannot be killed by the Demon.'},
+{id:'mayor', name:'Mayor', team:'townsfolk', edition:'tb',
+  ability:'If only 3 players live and no execution happens today, good wins. Any night-kill on the Mayor may be redirected to another player instead.'},
+{id:'butler', name:'Butler', team:'outsider', edition:'tb',
+  ability:'Each night: chooses a player (not themself). Tomorrow the Butler may only vote if that player also votes.'},
+{id:'drunk', name:'Drunk', team:'outsider', edition:'tb',
+  ability:'Doesn\'t know they\'re the Drunk. Believes they are a Townsfolk, but that role\'s ability never actually works.'},
+{id:'recluse', name:'Recluse', team:'outsider', edition:'tb',
+  ability:'May register as evil, and as a Minion or Demon, to other players\' abilities — even after death.'},
+{id:'saint', name:'Saint', team:'outsider', edition:'tb',
+  ability:'If executed, the good team loses immediately.'},
+{id:'poisoner', name:'Poisoner', team:'minion', edition:'tb',
+  ability:'Each night: poisons a player — their ability malfunctions (or gives false info) until the start of the following night.'},
+{id:'spy', name:'Spy', team:'minion', edition:'tb',
+  ability:'Each night: sees the whole Grimoire. May register as good, and as a Townsfolk or Outsider — even after death.'},
+{id:'goblin', name:'Goblin', team:'minion', edition:'house', houseRule:true,
+  ability:'Once the accusation against them is finished, if their defense opens with a plain "I am the Goblin" claim — before saying anything else — and the town executes them anyway that day, evil wins instantly. A claim tacked on after other remarks doesn\'t count.'},
+{id:'amnesiac', name:'Amnesiac', team:'outsider', edition:'house', houseRule:true,
+  ability:'Doesn\'t remember which townsfolk they are, but their role still works. The Childhood Friend knows their true identity. If the Childhood Friend dies, the Amnesiac regains their memory that night. May register as \'townsfolk\' or \'outsider\' until they regain their memory.'},
+{id:'sleeperagent', name:'Sleeper Agent', team:'outsider', edition:'house', houseRule:true,
+  ability:'Starts the game as a harmless, no-ability Townsfolk, but secretly holds a dormant Minion identity (never the Baron). If The Trigger is executed, they awaken as that evil Minion and use its ability for real from then on — without ever being told who the rest of the evil team is. May register as \'good\' or \'evil\', and as \'townsfolk\' or \'minion\', before they\'re awakened.'},
+{id:'scarletwoman', name:'Scarlet Woman', team:'minion', edition:'tb',
+  ability:'If 5+ players are alive when the Demon dies, the Scarlet Woman becomes the new Demon.'},
+{id:'baron', name:'Baron', team:'minion', edition:'tb',
+  ability:'At setup, 2 extra Outsiders are added to the game (and 2 fewer Townsfolk).'},
+{id:'imp', name:'Imp', team:'demon', edition:'tb',
+  ability:'Each night except the first: kills a player. May kill itself — if so, a living Minion becomes the new Imp.'},
+
+/* ---------------- SECTS & VIOLETS ---------------- */
+{id:'clockmaker', name:'Clockmaker', team:'townsfolk', edition:'sv',
+  ability:'First night: learns how many seats separate the Demon from their nearest Minion.'},
+{id:'dreamer', name:'Dreamer', team:'townsfolk', edition:'sv',
+  ability:'Each night: chooses a player (not themself or a Traveller), learns one good and one evil role — one of which is that player\'s actual role.'},
+{id:'snakecharmer', name:'Snake Charmer', team:'townsfolk', edition:'sv',
+  ability:'Each night: chooses a player. If that player is the Demon, that player becomes the good Snake Charmer and is permanently poisoned, while the Snake Charmer becomes the evil Demon.'},
+{id:'mathematician', name:'Mathematician', team:'townsfolk', edition:'sv',
+  ability:'Each night: learns how many players\' abilities have malfunctioned since dawn (any effects from earlier that day, plus tonight, all count) — the count resets fresh at the next dawn.'},
+{id:'flowergirl', name:'Flowergirl', team:'townsfolk', edition:'sv',
+  ability:'Each night except the first: learns whether the Demon voted today.'},
+{id:'towncrier', name:'Town Crier', team:'townsfolk', edition:'sv',
+  ability:'Each night except the first: learns whether a Minion nominated today.'},
+{id:'oracle', name:'Oracle', team:'townsfolk', edition:'sv',
+  ability:'Each night except the first: learns how many dead players are evil.'},
+{id:'savant', name:'Savant', team:'townsfolk', edition:'sv',
+  ability:'Each day, may privately visit the Storyteller to receive two statements — one true, one false.'},
+{id:'seamstress', name:'Seamstress', team:'townsfolk', edition:'sv',
+  ability:'Once per game, at night, chooses 2 players (not themself) and learns whether they share the same alignment.'},
+{id:'philosopher', name:'Philosopher', team:'townsfolk', edition:'sv',
+  ability:'Once per game, at night, may take on any good role\'s ability — even one already in play (that player becomes drunk instead). Their own ability is lost while doing so.'},
+{id:'artist', name:'Artist', team:'townsfolk', edition:'sv',
+  ability:'Once per game, by day, may privately ask the Storyteller a yes/no question, answered truthfully.'},
+{id:'juggler', name:'Juggler', team:'townsfolk', edition:'sv',
+  ability:'On their first day, may publicly guess up to 5 players\' roles. The following night, learns how many guesses were correct.'},
+{id:'sage', name:'Sage', team:'townsfolk', edition:'sv',
+  ability:'If killed by the Demon, learns that one of two players is that Demon.'},
+{id:'mutant', name:'Mutant', team:'outsider', edition:'sv',
+  ability:'If they publicly behave as though "mad" about being an Outsider, the Storyteller may have them executed immediately.'},
+{id:'sweetheart', name:'Sweetheart', team:'outsider', edition:'sv',
+  ability:'When they die, one surviving player secretly becomes drunk for the rest of the game.'},
+{id:'barber', name:'Barber', team:'outsider', edition:'sv',
+  ability:'When they die, the Demon may that night swap two players\' roles.'},
+{id:'klutz', name:'Klutz', team:'outsider', edition:'sv',
+  ability:'The instant they die, must publicly choose a living player — if that player is evil, good loses immediately.'},
+{id:'eviltwin', name:'Evil Twin', team:'minion', edition:'sv',
+  ability:'Secretly linked to a good player (their "twin"), who is shown who the Evil Twin is. While both twins live, good cannot win — and if the good twin is executed, evil wins immediately.'},
+{id:'witch', name:'Witch', team:'minion', edition:'sv',
+  ability:'Each night: curses a player — if that player nominates the next day, they die immediately. Lost once only 3 players remain.'},
+{id:'cerenovus', name:'Cerenovus', team:'minion', edition:'sv',
+  ability:'Each night: chooses a player and a good role — that player must convincingly act mad about being that role the next day, or risk execution.'},
+{id:'pithag', name:'Pit-Hag', team:'minion', edition:'sv',
+  ability:'Each night except the first: may turn a player into a role not currently in play (potentially changing their alignment). If this creates a new Demon, tonight\'s deaths are the Storyteller\'s choice.'},
+{id:'fanggu', name:'Fang Gu', team:'demon', edition:'sv',
+  ability:'Each night except the first: kills a player. The first time this kill lands on an Outsider, that Outsider becomes the new evil Fang Gu, and the original Fang Gu dies (remaining evil). The new Fang Gu is not told who the Minions are. An extra Outsider is added at setup.'},
+{id:'vigormortis', name:'Vigormortis', team:'demon', edition:'sv',
+  ability:'Each night except the first: kills a player. If that player is a Minion, they keep their ability after death, and a Townsfolk neighbouring them becomes poisoned. One fewer Outsider is used at setup.'},
+{id:'nodashii', name:'No Dashii', team:'demon', edition:'sv',
+  ability:'Each night except the first: kills a player. Both Townsfolk neighbouring the Demon (one on each side) have a poisoned (malfunctioning) ability.'},
+{id:'vortox', name:'Vortox', team:'demon', edition:'sv',
+  ability:'Each night except the first: kills a player. All Townsfolk information given is false, and if no execution happens on a day, evil wins.'},
+
+/* ---------------- BAD MOON RISING ---------------- */
+{id:'grandmother', name:'Grandmother', team:'townsfolk', edition:'bmr',
+  ability:'First night: starts knowing a good player and their character. If the Demon kills that player, the Grandmother dies too.'},
+{id:'sailor', name:'Sailor', team:'townsfolk', edition:'bmr',
+  ability:'Cannot die. Each night: chooses a living player — either the Sailor or that player is drunk until the start of the following night.'},
+{id:'chambermaid', name:'Chambermaid', team:'townsfolk', edition:'bmr',
+  ability:'Each night: chooses 2 players (not themself) and learns how many of them wake tonight due to their own ability.'},
+{id:'exorcist', name:'Exorcist', team:'townsfolk', edition:'bmr',
+  ability:'Each night except the first: chooses a player (different from the previous night). If that player is the Demon, the Demon learns who chose them and doesn\'t wake tonight.'},
+{id:'innkeeper', name:'Innkeeper', team:'townsfolk', edition:'bmr',
+  ability:'Each night except the first: chooses 2 players — neither can die tonight, but one of them is drunk until the start of the following night.'},
+{id:'gambler', name:'Gambler', team:'townsfolk', edition:'bmr',
+  ability:'Each night except the first: chooses a player and guesses their character. If wrong, the Gambler dies.'},
+{id:'gossip', name:'Gossip', team:'townsfolk', edition:'bmr',
+  ability:'Each day: may make one public statement. That night, if the statement was true, a player dies.'},
+{id:'courtier', name:'Courtier', team:'townsfolk', edition:'bmr',
+  ability:'Once per game, at night: names a character — that character\'s player is drunk for the next 3 nights and 3 days.'},
+{id:'professor', name:'Professor', team:'townsfolk', edition:'bmr',
+  ability:'Once per game, at night except the first: chooses a dead player. If they were a Townsfolk, they are resurrected.'},
+{id:'minstrel', name:'Minstrel', team:'townsfolk', edition:'bmr',
+  ability:'When a Minion dies by execution, all other players (except Travellers) stay drunk through that night and the following day, clearing only when the night after that begins.'},
+{id:'tealady', name:'Tea Lady', team:'townsfolk', edition:'bmr',
+  ability:'If both of the Tea Lady\'s living neighbours are good, neither of them can die.'},
+{id:'pacifist', name:'Pacifist', team:'townsfolk', edition:'bmr',
+  ability:'Executed good players might not actually die.'},
+{id:'fool', name:'Fool', team:'townsfolk', edition:'bmr',
+  ability:'The first time the Fool would die, they don\'t.'},
+{id:'tinker', name:'Tinker', team:'outsider', edition:'bmr',
+  ability:'Might die at any time, for any reason, at the Storyteller\'s discretion.'},
+{id:'moonchild', name:'Moonchild', team:'outsider', edition:'bmr',
+  ability:'The moment they learn they have died, they publicly choose a living player. If that player is good, that player dies tonight.'},
+{id:'goon', name:'Goon', team:'outsider', edition:'bmr',
+  ability:'Each night, whichever player first targets the Goon with an ability becomes drunk until the start of the following night, and the Goon takes on that player\'s alignment.'},
+{id:'lunatic', name:'Lunatic', team:'outsider', edition:'bmr',
+  ability:'Believes they are the Demon and may act like one each night, but isn\'t. The Storyteller shows them fake minions and fake information, and privately tells the real Demon the Lunatic\'s identity and nightly choices.'},
+{id:'godfather', name:'Godfather', team:'minion', edition:'bmr',
+  ability:'Starts knowing which Outsiders are in play. If an Outsider died today, chooses a player tonight — that player dies (regardless of their role). (At setup, the Storyteller may add one extra or one fewer Outsider.)'},
+{id:'devilsadvocate', name:'Devil\'s Advocate', team:'minion', edition:'bmr',
+  ability:'Each night: chooses a living player (different from the previous night). If that player is executed the next day, they survive instead of dying.'},
+{id:'assassin', name:'Assassin', team:'minion', edition:'bmr',
+  ability:'Once per game, at night except the first: may choose a player — they die, even if something would normally prevent it.'},
+{id:'mastermind', name:'Mastermind', team:'minion', edition:'bmr',
+  ability:'If the Demon is executed, the game continues for one more day — if a player is executed that day, their team loses instead (good only wins if nobody, or an evil player, is executed).'},
+{id:'po', name:'Po', team:'demon', edition:'bmr',
+  ability:'Each night except the first: may choose a player — they die. May refuse to kill instead; if so, must choose 3 players the following night — they all die.'},
+{id:'pukka', name:'Pukka', team:'demon', edition:'bmr',
+  ability:'Each night: chooses a player who becomes poisoned. Whoever was poisoned the previous night dies now, and the poison is removed.'},
+{id:'shabaloth', name:'Shabaloth', team:'demon', edition:'bmr',
+  ability:'Each night except the first: chooses 2 players (may target players who are already dead) who die. Whoever the Shabaloth targeted that night — living or already dead — becomes eligible for the Storyteller to bring back to life, but only at the very start of the following night, and only one of the two at most, never both.'},
+{id:'zombuul', name:'Zombuul', team:'demon', edition:'bmr',
+  ability:'Each night except the first, if nobody died today: may choose a player who dies. The first time the Zombuul would die, they secretly survive — but are treated as dead (no vote, no nomination) until they actually die a second time.'},
+
+/* ---------------- FAN-MADE: "Carnival of Shadows" ---------------- */
+{id:'mesmerist', name:'Mesmerist', team:'townsfolk', edition:'fan', custom:true, requiresAlignmentSwap:true,
+  ability:'Each night: chooses a player and learns their alignment as it was at the start of the game, even if it has changed since.'},
+{id:'maskedstranger', name:'Masked Stranger', team:'outsider', edition:'fan', custom:true,
+  ability:'Once per game, by day, may publicly unmask and claim to be a specific Townsfolk. Secretly: if that role is not in play, they become it for real; if it is, they become the Drunk instead, believing they are that role.'},
+{id:'puppetmaster', name:'Puppetmaster', team:'minion', edition:'fan', custom:true,
+  ability:'Each night: chooses a player. The next time that player is nominated — so long as it happens before the following night begins — each vote cast for their execution counts as two, effectively halving the votes they need to be executed. If they aren\'t nominated in time, the mark fades unused and a new player may be chosen the next night.'},
+
+/* ---------------- FAN-MADE: "Harvest of Lies" ---------------- */
+{id:'nightwatchman', name:'Night Watchman', team:'townsfolk', edition:'fan', custom:true,
+  ability:'Each night except the first: chooses a player (not themselves). If the Demon kills that player tonight, the Night Watchman learns the identity and the type of Demon.'},
+{id:'scarecrow', name:'Scarecrow', team:'outsider', edition:'fan', custom:true,
+  ability:'Counts as two players for any ability that counts living players, but still only casts one vote.'},
+{id:'vintner', name:'Vintner', team:'townsfolk', edition:'fan', custom:true,
+  ability:'Each night except the first: chooses a player. That player is protected from the Demon — if targeted, they don\'t die, but become drunk until the start of the following night.'},
+
+/* ---------------- FAN-MADE: "Optional House Rules" ---------------- */
+{id:'toxicologist', name:'Toxicologist', team:'townsfolk', edition:'fan', custom:true,
+  ability:'Each night: chooses two players. Learns whether at least one of them is drunk or poisoned.'},
+{id:'exhumist', name:'Exhumist', team:'townsfolk', edition:'fan', custom:true,
+  ability:'Each night: chooses a dead player. Learns their alignment. If the chosen player is the Demon, the Exhumist dies.'},
+{id:'blackmailer', name:'Blackmailer', team:'minion', edition:'fan', custom:true,
+  ability:'Each night: chooses a player, who receives the "Blackmailed" token, then a second player, who receives "the Mark" token. The Blackmailed player must nominate and vote to execute the Mark today — someone else may do the nominating, but the Blackmailed player must cast a vote in that nomination. If they don\'t, they die once the day ends.'},
+{id:'ritualist', name:'Ritualist', team:'townsfolk', edition:'fan', custom:true,
+  ability:'Each night: chooses a player (not themselves), who receives the "Ritual" token. If the Demon kills that player tonight, the ritual succeeds and the Demon becomes "Hexed" — unless the ritual player was also protected from the Demon, which prevents the Hex entirely. On a night the Demon is Hexed, their kill (or Pukka\'s poison) doesn\'t land on their own chosen target at all — the Ritualist wakes right after the Demon and redirects it to a player of their choice instead, living or dead, even the Demon themself.'},
+];
+const ROLE_MAP = Object.fromEntries(ROLES.map(r=>[r.id,r]));
+
+// FULL_INFO: an expanded, almanac-style explanation with a short worked
+// example for every role — same content as the Storyteller Tool, so
+// players see identical wording. Original paraphrased writing, not copied
+// from any official or wiki text.
+const FULL_INFO = {
+  washerwoman:'On the first night, the Storyteller shows the Washerwoman two players and one Townsfolk character, confirming that exactly one of those two players holds that role — though not which one. This is accurate information (unless the Washerwoman is drunk or poisoned) and says nothing about the other player\'s role. Example: shown Alice and Bob along with "Chef," one of them really is the Chef, but the Washerwoman doesn\'t know which.',
+  librarian:'On the first night, shown two players and one Outsider character, confirming one of the two holds that role. If there are no Outsiders in play at all, the Librarian is told that instead, which is itself useful information. Example: with a Baron adding extra Outsiders, the ping is nearly guaranteed to land — but a "no Outsiders in play" result can help rule out roles like the Drunk.',
+  investigator:'On the first night, shown two players and one Minion character, confirming one of the two holds that role — like the Washerwoman and Librarian, this narrows things to two players without saying which. Example: shown Carla and Dan along with "Poisoner," the town now knows to watch both of them closely.',
+  chef:'On the first night, learns the exact number of pairs of adjacent evil players seated next to each other around the circle — a result of 0 is meaningful, since it means no two evil players are neighbours. Example: a Chef result of "1" tells the town two evil players are sitting side by side somewhere, without saying where.',
+  empath:'Each night, learns how many of their two immediate living neighbours are evil (0, 1, or 2). As players die, the Empath\'s effective neighbours can shift, since dead players are skipped when counting who\'s next around the circle. Example: if the player to the Empath\'s left is executed, the Empath\'s new "neighbour" becomes whoever is next alive in that direction.',
+  fortuneteller:'Each night, chooses two players and learns whether either is the Demon — but one good player (the "red herring") is secretly picked at setup to always register as a "yes," so a positive result is never proof on its own. Example: if picking Alice and Bob together gives "yes" every night regardless of who else is added, one of them is probably the red herring.',
+  undertaker:'Each night except the first, learns which character was executed that day — not who, the character itself. Only useful on days an execution actually happens, and shows the role as it currently is if it has changed. Example: if the town executes someone who turns out to be the Imp, the Undertaker learns "Imp" that night — valuable confirmation the immediate threat is gone.',
+  monk:'Each night except the first, protects one player (not themself) from dying specifically to the Demon that night — it blocks only the Demon\'s kill, not other death sources. A savvy Monk often waits to claim publicly, since they can\'t protect themself. Example: the Monk protects the Mayor; the Imp targets the Mayor that same night, and the Mayor survives with no one else the wiser.',
+  ravenkeeper:'If killed at night, wakes immediately (before morning) to choose a player and learn their true character — a rare case of gaining information specifically from dying. If poisoned or drunk that night, the result is false, so evil sometimes poisons a suspected Ravenkeeper pre-emptively. Example: killed by the Demon, the Ravenkeeper wakes and points at the Poisoner, learning their true role posthumously.',
+  virgin:'The one-shot protection only triggers on the Virgin\'s very first-ever nomination, and only if the nominator is a Townsfolk — a nomination by an Outsider, Minion, or Demon does nothing special. Evil players often deliberately avoid ever nominating the Virgin as a result. Example: a suspected Townsfolk nominates the Virgin, and the Storyteller announces an immediate execution before any vote is called — a huge, game-swinging confirmation.',
+  slayer:'A one-shot public ability usable any time during the day — names a player out loud; if they\'re the Demon they die immediately, and if not, nothing visibly happens at all (a whiff looks identical to a wasted shot on a non-Demon). Example: a player claiming Slayer shoots their top suspect; when the town square stays quiet, the shot missed, but nobody else can be sure who the real Slayer even is.',
+  soldier:'Simply cannot be killed by the Demon\'s night-time kill, though the Soldier can still die to execution, a Saint-style loss condition, or various Minion effects. The immunity is invisible — nobody is told a kill failed. Example: the Imp targets the Soldier at night; nothing happens, and the Soldier may not even realize they were the target.',
+  mayor:'Has two effects: an alternate win condition (if only 3 players are alive and the town chooses not to execute anyone that day, good wins immediately) and an optional Storyteller-discretion redirect of any night-kill on the Mayor onto a different player. The redirect is never guaranteed. Example: with exactly 3 players left, if nobody is executed that day, the game ends immediately in good\'s favor regardless of who the Demon secretly is.',
+  butler:'Each night, chooses a player (not themself); the next day, the Butler may only cast a vote at moments when that chosen player is also voting. This limits the Butler\'s agency without stopping them from nominating or speaking freely. Example: if the Butler\'s pick never votes that day, the Butler effectively can\'t vote either.',
+  drunk:'Secretly believes they are a specific Townsfolk (chosen by the Storyteller at setup) and thinks that role\'s ability genuinely works, but every result they receive is fabricated — the real ability never functions. Good players can only spot the Drunk by noticing their "information" never lines up with reality. Example: a player confidently claims Empath results all game, but they\'re actually the Drunk, and every number they\'ve been quietly told is made up.',
+  recluse:'May register as evil, and specifically as a Minion or Demon, to any detection ability at the Storyteller\'s discretion — this applies even after death. This makes the Recluse a walking false-positive that can shield the real evil team. Example: a Fortune Teller pings the Recluse as a "yes" despite them being perfectly good, potentially sending the town after an innocent Outsider.',
+  saint:'If the town\'s vote executes the Saint, evil wins the game immediately and irreversibly, regardless of anything else in play. Because the stakes are so high, confirming an execution carefully matters when a Saint might be present. Example: the town executes a player late in the game who turns out to be the Saint — the game ends there, even if the real Demon was about to be caught.',
+  poisoner:'Each night, secretly poisons a player, whose ability then does nothing or produces false information until the start of the following night — the poisoned player isn\'t told, so they may unknowingly report bad information as real. Example: the Poisoner targets the Empath, who reports a made-up number to the town, potentially sending suspicion the wrong way.',
+  spy:'Each night, privately reviews the entire Grimoire (everyone\'s true character and status), and may register as good, specifically as a Townsfolk or Outsider, to other players\' abilities — even after death. The combination of perfect information and disguise makes the Spy exceptionally dangerous. Example: seeing the real Demon is about to be nominated, the Spy quietly steers conversation to protect them, all while potentially reading as harmless to a Fortune Teller.',
+  goblin:'A house-rule Minion: the Goblin does not interrupt their own accusation to claim it. Once the accusation is finished, their defense must OPEN with a plain, definitive "I am the Goblin" (or equivalent) — the very first thing they say — and if the town executes them anyway that same day, evil wins instantly. Claiming after any other remark, or partway through a longer defense, doesn\'t count; play simply continues as normal. Staying silent is the safer play unless the Goblin\'s team is confident the town won\'t back down. Example: nominated and accused, the Goblin waits until the accusation is done, then opens with "I am the Goblin" and says nothing else first — the town executes them anyway, and evil wins on the spot. Example of a claim that does NOT count: the Goblin argues their innocence for a minute, then adds "...and also I\'m the Goblin" near the end — too late; it doesn\'t trigger the win even if they\'re executed.',
+  amnesiac:'The Amnesiac is a townsfolk, but has forgotten who they are. They may register as \'townsfolk\' or \'outsider\' before their identity is revealed to them. The townsfolk ability still works, but without context, it will be difficult for the Amnesiac to figure out how it works. At the start of the game, another townsfolk is marked as the Amnesiac\'s Childhood Friend. During the first night, the Childhood Friend is awakened and told the Amnesiac\'s true identity. If the Childhood Friend dies (regardless of cause), the Amnesiac regains their memory that night. The Storyteller will inform the Amnesiac when woken that night, or at the end of the night phase (if they aren\'t normally woken up), or the moment after the demon kills their Childhood Friend during the night.',
+  sleeperagent:'The Sleeper Agent starts the game as a townsfolk, with no ability of their own, but is secretly assigned a dormant Minion role at setup - never the Baron, since forcing two Townsfolk-to-Outsider conversions this late would be far too powerful and disruptive. They may register as \'good\' or \'evil\', and as \'townsfolk\' or \'minion\', before they\'re awakened. The Storyteller assigns another evil player as their Handler (a reminder token, purely for the Storyteller\'s own tracking), and assigns the Trigger reminder token to a Townsfolk or Outsider (never the Saint). If the Trigger is executed, the Sleeper Agent is instead transformed into their secret Minion identity: the Storyteller wakes them, tells them they are now that evil Minion, and from then on they use that ability for real - but they are never told who the rest of the evil team is. Example: a quiet, seemingly harmless Outsider suddenly becomes the Poisoner the moment the wrong player is executed, catching the whole town off guard.',
+  scarletwoman:'If the Demon dies while 5 or more players are still alive, the Scarlet Woman immediately becomes the new Demon and inherits that character\'s ability from then on. Below 5 players alive, this swap simply doesn\'t happen. Example: the town executes the Imp with 6 players left; the Scarlet Woman is now secretly the Imp, acting as Demon starting that very night.',
+  baron:'Has no in-game action — its entire effect happens at setup, adding two extra Outsiders (and removing two Townsfolk to compensate) before roles are even assigned. This changes the whole game\'s good/evil information landscape from the start. Example: a 10-player game that would normally have zero Outsiders instead gets two, with two fewer Townsfolk, because a Baron is in play.',
+  imp:'Each night except the first, kills a player — but may instead kill themself, in which case a living Minion is instantly and secretly promoted to be the new Imp. This self-kill option lets the Demon role pass to a less-suspected Minion late in the game. Example: with suspicion mounting, the Imp kills themself at night; a Minion nobody suspects is now secretly the Demon.',
+
+  clockmaker:'On the first night, learns the exact number of seats between the Demon and their closest Minion, counting the shorter direction around the circle. A low number suggests they\'re sitting close together; a high number suggests real distance. Example: a result of "1" means the Demon is sitting directly next to one of their Minions.',
+  dreamer:'Each night, chooses a player (not themself or a Traveller) and is told one good and one evil character, exactly one of which is that player\'s real role — the other is a decoy. This gives partial, sometimes misleading information that still narrows things down. Example: told "Empath or Poisoner" about a player, the Dreamer knows it\'s one of the two but must work out which through other clues.',
+  snakecharmer:'Each night, chooses a player; if that player is the Demon, the two instantly and completely swap characters and alignments — the Snake Charmer becomes the new evil Demon, and the old Demon becomes the good, permanently poisoned Snake Charmer. This can upend a game in progress. Example: on night 3, the Snake Charmer unknowingly picks the real Demon, and moments later the entire threat has changed identity without anyone at the table being told.',
+  mathematician:'Each night, learns how many players\' abilities malfunctioned or were otherwise affected by another character since dawn that day — spanning both the day and the following night, and resetting fresh at the next dawn. Always wakes last among tonight\'s roles so every effect that already happened gets captured. A result of zero is itself informative. Example: a result of "2" tells the Mathematician two players\' powers were tampered with since dawn, without saying who or how.',
+  flowergirl:'Each night except the first, learns simply whether the Demon voted at all during the previous day — a yes/no with no names attached. Over several days this can help correlate suspicious abstaining with a specific player. Example: a "no" result three days running might point the town toward whoever never seems to vote.',
+  towncrier:'Each night except the first, learns whether any Minion nominated a player during the previous day — again a yes/no with no names attached. Example: a "yes" result the day after a surprising nomination might mean that nominator is a Minion.',
+  oracle:'Each night except the first, learns exactly how many currently-dead players are evil — a number that can only rise or hold steady as more evil players die over the game. Example: if the Oracle\'s count jumps from 0 to 1 right after an execution, that executed player was evil.',
+  savant:'Each day, may privately visit the Storyteller to receive two statements about the game — one guaranteed true, one guaranteed false, though the Savant isn\'t told which is which. This puts real interpretive work on the player to decide what to trust or share. Example: told "the Empath is good" and "there are two Outsiders in play," the Savant must decide which claim to test or act on.',
+  seamstress:'A single-use ability: once per game, at night, chooses two players (not themself) and learns whether they share the same alignment — not their roles, just whether they match. Because it\'s one-shot, players often save it for a moment of real uncertainty. Example: checking two players who\'ve been publicly at odds, the Seamstress learns they\'re secretly on the same team.',
+  philosopher:'A single-use ability: once per game, at night, may adopt any good character\'s ability for the rest of the game — even one already assigned to another player, in which case that other player becomes drunk instead of being blocked. The Philosopher\'s own ability is lost the moment they do this. Example: the Philosopher takes on Empath-style information even though another player is the real Empath — that real Empath is now secretly drunk, and their nightly numbers can\'t be trusted.',
+  artist:'A single-use ability: once per game, during the day, may privately ask the Storyteller any yes/no question and receive a truthful answer — a flexible tool that rewards a sharply specific question. Example: asking "is the Imp sitting within 3 seats of me?" gives far more actionable information than a broad question like "is anyone evil near me?"',
+  juggler:'On their first day in the game, may publicly guess up to five players\' characters at once; the following night, learns how many of the five were correct (not which ones). This is a public action that broadcasts the Juggler\'s suspicions to everyone, including evil. Example: guessing five roles and learning "3 correct" the next night narrows things down without revealing which three landed.',
+  sage:'Only triggers if the Sage is killed specifically by the Demon — not by execution or any other cause. When that happens, they learn that one of two players (chosen by the Storyteller) is the Demon responsible. Example: killed in the night, the Sage wakes and is told "Alice or Ben is the Demon" — a 50/50 lead for the town.',
+  mutant:'Has no active ability — instead, if the Mutant publicly behaves as though "mad" about secretly being an Outsider, the Storyteller may have them executed on the spot, bypassing a normal vote. This creates a strange incentive to stay quiet about their true nature. Example: a player loudly insists they must be some broken Outsider; if that\'s the Mutant talking, the Storyteller may end the day right there.',
+  sweetheart:'Has no active ability — the moment the Sweetheart dies, by any means, the Storyteller secretly chooses one survivor who becomes drunk for the rest of the game. Nobody is told this happened. Example: the Sweetheart is executed; quietly, a seemingly unrelated survivor\'s ability stops working correctly for the remainder of the game.',
+  barber:'Has no active ability — the night after the Barber dies, the Demon may swap two players\' characters entirely, including alignments, a powerful one-time disruption for evil. Example: the night after the Barber\'s death, the Demon quietly swaps the Empath and a Minion\'s characters, upending what the town thought it knew.',
+  klutz:'Has no active ability while alive — the instant the Klutz dies, by any means, they must immediately and publicly name a living player; if that player is evil, good loses the game right then. Example: executed at dusk, the Klutz is forced to publicly point at someone before leaving the game — if they point at the real Demon, evil wins instantly.',
+  eviltwin:'Secretly paired at the start of the game with one good player (their "twin"), who is privately shown that the Evil Twin exists and who it is. While both twins live, good cannot win at all — and if the good twin is executed, evil wins immediately too. Example: aware of the pairing, the good twin might avoid drawing suspicion toward their evil counterpart, since their own death hands evil the game.',
+  witch:'Each night, curses a player; if that specific player nominates anyone the next day, they die immediately as a result. This stops working entirely once only 3 players remain, removing one of evil\'s late-game tools right when the game is tightest. Example: a cursed player who doesn\'t realize it nominates a suspect the next day and drops dead on the spot.',
+  cerenovus:'Each night, chooses a player and a specific good character; that player must convincingly act "mad" about secretly being that character the next day, or risk execution by Storyteller discretion for not playing along. Example: told to act like the Empath, an unrelated Townsfolk starts dropping fake Empath-style hints all day to avoid suspicion.',
+  pithag:'Each night except the first, may turn a player into any character not currently in play, potentially flipping their alignment — a rare ability that can create a second Demon mid-game. If that happens, the Storyteller decides how that night\'s deaths play out. Example: a suspected Townsfolk is turned into an unused Demon character overnight, and the town has no idea the threat has multiplied.',
+  fanggu:'Each night except the first, kills a player — but the first time that kill lands on an Outsider, that Outsider becomes the new evil Fang Gu, and the original dies in their place, remaining evil (not turning good). The new Fang Gu is not told who the Minions are. Because it needs an Outsider to exist for this to matter, an extra Outsider is added at setup. Example: the first kill hits the Recluse, who becomes the new evil Fang Gu overnight — without being told who the Minions are — while the original is now just an ordinary dead player.',
+  vigormortis:'Each night except the first, kills a player — if the kill lands on a Minion, that Minion keeps using their ability from beyond the grave, and a Townsfolk neighbouring the kill becomes poisoned. Because it wants fewer Outsiders distracting from Townsfolk, one fewer Outsider is used at setup. Example: Vigormortis kills a Minion who keeps quietly poisoning or cursing players even after death.',
+  nodashii:'Each night except the first, kills a player, and simultaneously poisons both Townsfolk sitting immediately next to the Demon, making their abilities malfunction or lie for as long as No Dashii remains untouched. Example: a Chef and an Undertaker sitting on either side of No Dashii both start quietly receiving false results.',
+  vortox:'Each night except the first, kills a player as usual, but while Vortox is in play, all Townsfolk-derived information is guaranteed false. If a full day passes with no execution at all, evil wins immediately, pressuring the town to execute daily. Example: the Empath, Fortune Teller, and Chef all report confident results all game — every one of them wrong, because Vortox is quietly in play.',
+
+  grandmother:'On the first night, learns one good player and their exact character — a guaranteed-accurate piece of information. The catch: if the Demon ever kills that specific known player, the Grandmother dies in the same moment. Example: told Alice is the Empath, the Grandmother is thrilled — until the Demon kills Alice one night, and the Grandmother dies right alongside her.',
+  sailor:'The Sailor cannot die. Each night, chooses a living player; either the Sailor or that chosen player becomes drunk until the start of the following night. Example: the Sailor targets a suspected evil player, risking their own temporary drunkenness in exchange for potentially disabling that player\'s ability instead.',
+  chambermaid:'Each night, chooses two other players and learns how many of them (0, 1, or 2) are woken by their own ability that same night — a subtle way to detect "night active" roles without learning what they are. Example: a result of "1" among two chosen players hints one of them has a nightly ability in use, without revealing which.',
+  exorcist:'Each night except the first, chooses a player different from the one chosen the previous night; if that player is the Demon, the Demon is privately told who exorcised them and skips acting entirely that night. Example: correctly targeting the real Demon on a hunch, the Exorcist prevents that night\'s kill — but the Demon now knows exactly who did it.',
+  innkeeper:'Each night except the first, chooses two players who cannot die that night for any reason — but one of the two (Storyteller\'s choice) becomes drunk until the start of the following night as a side effect. Example: the Innkeeper protects two suspected Townsfolk overnight; one survives cleanly, the other unknowingly can\'t trust their own ability the next day.',
+  gambler:'Each night except the first, chooses a player and guesses their exact character; if wrong, the Gambler dies as a direct consequence. Example: confident in a hunch, the Gambler guesses "Poisoner" about a player who\'s actually the Chef — and dies that night for the wrong guess.',
+  gossip:'Each day, may make one public statement to the table; that night, if the statement turns out to have been true, the Storyteller kills a player as a consequence. Example: the Gossip states "there is at least one Minion in the left half of the circle" — if true, someone dies that night as a result.',
+  courtier:'A single-use ability: once per game, at night, names any character in the script; whichever player holds that character becomes drunk for the following three full day/night cycles. Because the effect is so long-lasting, timing it well usually beats using it immediately. Example: naming the suspected Demon\'s character mid-game disables their ability for three whole cycles.',
+  professor:'A single-use ability: once per game, on any night except the first, chooses a dead player; if they were a Townsfolk, they\'re brought back to life on the spot. One of the only resurrection effects in the game. Example: with the town down a key Townsfolk, the Professor brings the executed Empath back from the dead, restoring their nightly information.',
+  minstrel:'Has no active ability — whenever any Minion dies by execution, every other player (except Travellers) stays drunk through that night and the following day, purely because the Minstrel is in the game, clearing only when the night after that begins. Example: a Minion is executed; the whole town (bar the Minstrel) is quietly drunk that night and all through the next day, only sobering up the night after that.',
+  tealady:'Passive protection: as long as both of the Tea Lady\'s immediate living neighbours are good, neither can die by any means. If either neighbour becomes evil, or the neighbours change through deaths, the protection can shift or disappear. Example: sitting between two good Townsfolk, both are unkillable — until one of them turns out to secretly be evil, at which point protection vanishes instantly.',
+  pacifist:'Passive effect: whenever a good player is executed, they might not actually die, at the Storyteller\'s discretion — evil executions still work normally. Example: the town executes a player they weren\'t fully sure about; because that player is good and the Pacifist is in play, the Storyteller may quietly let them survive.',
+  fool:'Passive one-shot protection: the very first time the Fool would die, from any cause, they instead survive completely unharmed — this can only trigger once. Example: the Demon kills the Fool on night 3; they wake up fine, but a second attempt later in the game succeeds normally.',
+  tinker:'Has no ability to use — the Storyteller may choose to kill the Tinker at any time, for any reason, entirely independent of the Demon or any other character. Example: with no trigger from another character, the Storyteller simply announces the Tinker has died, whenever it best serves the game.',
+  moonchild:'Has no ability while alive — the instant the Moonchild learns they\'ve died, they must immediately and publicly choose a living player; if that player is good, they die that same night as a consequence. Example: executed at dusk, the Moonchild publicly points at a suspect — if that player turns out to be good, they die that very night too.',
+  goon:'A reactive rather than proactive ability: each night, whichever player first targets the Goon with any ability becomes drunk until the start of the following night, and the Goon\'s own alignment instantly flips to match that targeting player\'s alignment. Example: a Minion targets the Goon at night; the Minion becomes drunk, and the Goon is now secretly evil for as long as that holds.',
+  lunatic:'Believes they\'re the Demon and goes through the motions of a demon-style kill choice, but it\'s entirely fictional — the Storyteller feeds them fake Minion info and a fake sense of agency, and their "kills" do nothing. The real Demon is privately told the Lunatic\'s identity and nightly choices, turning the Lunatic\'s guesses into free intelligence for evil. Example: the Lunatic confidently "kills" a suspect; nothing happens, but the real Demon now secretly knows who was targeted.',
+  godfather:'Starts the game knowing exactly which Outsiders are in play. On any night after an Outsider died during the preceding day, the Godfather may kill any player in retaliation, regardless of that target\'s actual role. Example: the town executes a Recluse; that same night, the Godfather retaliates by killing the Empath, unrelated as that may be.',
+  devilsadvocate:'Each night, chooses a living player different from the one chosen the previous night; if that player is executed the following day, they survive instead of dying. Example: the town votes to execute a player with a clear majority, but because the Devil\'s Advocate protected them the night before, they walk away alive.',
+  assassin:'A single-use ability: once per game, on any night except the first, may choose a player who then dies no matter what — this kill cannot be blocked or reduced by any other character\'s protection. Example: even though the target is protected by a Monk-like ability that same night, the Assassin\'s kill still goes through regardless.',
+  mastermind:'Has no active night ability — if the Demon is ever executed, the game doesn\'t end immediately; play continues for one more full day and night. If a player is then executed on that extra day, evil can still lose control of the outcome (good only wins outright if nobody, or only an evil player, is executed that extra day). Example: the town executes the Imp expecting an instant win, only to be told the game continues one more tense round.',
+  po:'Each night except the first, may kill a chosen player as normal — or refuse to kill entirely; if they do, the following night they must choose three players, and all three die at once. Example: Po skips killing on night 3; on night 4, three players die simultaneously as the deferred, amplified consequence.',
+  pukka:'Each night, chooses a player who becomes poisoned; whoever was poisoned the previous night then dies, and their poison is lifted. The kill always lands one full night behind the poisoning, leaving a brief window to potentially save the poisoned player first. Example: poisoned on night 2, a player has all of night 2 and day 3 to be helped before Pukka\'s kill catches up on night 3.',
+  shabaloth:'Each night except the first, kills two chosen players at once — targets can even be players who are already dead. Whoever the Shabaloth targeted that night, living or already dead, becomes eligible for the Storyteller to bring back to life — but ONLY at the very start of the following night, and only one of the two at most, never both; the window closes the moment that night ends. Example: on the Second Night the Shabaloth targets the Minstrel (who dies) and the already-dead Pit-Hag. At the start of the Third Night — and only then — the Storyteller may revive either the Minstrel or the Pit-Hag, or neither, but never both. Re-targeting a dead player again on a later night resets the same one-night window on the new pick, so repeatedly trading away a living kill for a shot at reviving someone is a real risk, not a free action.',
+  zombuul:'Each night except the first, but only on nights where nobody died during the preceding day, may choose a player who dies. The first time the Zombuul themself would die, they secretly survive instead — but are treated as already dead (no votes, no nominations) until they actually die a second time. Example: executed by the town, the Zombuul appears to die but secretly lives on, unable to vote or nominate, until a later event finally kills them for real.',
+
+  mesmerist:'Each night, chooses a player and learns what their alignment was at the very start of the game — even if some other effect has since changed that player\'s true alignment. Especially useful in games with alignment-flipping mechanics, since a simple current-alignment check wouldn\'t catch a flip. Example: a player who started good but was later turned evil by the Pit-Hag would still register as "good" to the Mesmerist, revealing a flip has occurred.',
+  maskedstranger:'A single-use, player-driven power: once per game, during the day, may theatrically remove their mask and publicly claim to be a specific Townsfolk character. Secretly, the Storyteller checks whether that character is already in play. If it isn\'t, the transformation succeeds - they genuinely become that Townsfolk from then on, with its real ability. If it is, the transformation instead fails - they secretly become the Drunk, believing they are the claimed role, with no real ability of their own. Only the Storyteller ever learns which one happened. Example: a Masked Stranger dramatically announces "I was the Mayor all along!" - the town has no way to know whether they truly are now, or whether they\'re secretly just a very convincing Drunk.',
+  puppetmaster:'Each night, chooses a player; the next time that player is nominated, so long as it happens before the following night begins, every vote cast for their execution counts as two — effectively halving the votes needed to execute them. If the chosen player isn\'t nominated before the next night falls, the mark fades unused and the Puppetmaster gets a fresh pick that night, the same player or someone new. Example: with 8 players alive (normally 4 votes to execute), the Puppetmaster marks a suspected Demon; when nominated the next day, only 2 real votes are enough to put them up for execution.',
+  nightwatchman:'Each night except the first, chooses a player other than themself; if the Demon kills that specific player that same night, the Night Watchman learns which Demon character it was. Rewards accurately predicting who the Demon will target. Example: correctly guessing the Demon\'s next victim, the Night Watchman learns overnight exactly which Demon character is responsible.',
+  scarecrow:'Passive effect: for any ability that counts the number of living players, the Scarecrow counts as two players — but still only ever casts one vote, like everyone else. This can throw off count-based thresholds or win conditions. Example: an ability that only works with "5 or fewer players alive" might not trigger even at 6 living bodies, because the Scarecrow\'s double-count pushes the effective number past the threshold.',
+  vintner:'Each night except the first, chooses a player; if the Demon chooses that player that night, they survive instead and become drunk until the start of the following night — registering as an Outsider and/or Drunk to detection abilities during that time.',
+  toxicologist:'Each night, chooses two players and learns whether at least one of them is currently drunk or poisoned — a yes/no with no names attached to which one. Example: checking a suspected Poisoner\'s two most recent targets together might come back "yes" even without knowing which one is actually affected.',
+  exhumist:'Each night, chooses a dead player and learns their true alignment — good or evil, no role name. If the chosen player turns out to be the Demon, the exhuming backlash kills the Exhumist on the spot. Example: digging into a dead Minion confirms "evil" with no risk; digging into what turns out to be the dead Demon confirms "evil" too, but costs the Exhumist their own life.',
+  blackmailer:'Each night, chooses a player (the "Blackmailed" target) and then a second player (the "Mark"). The Blackmailed player is privately woken and told they must nominate and vote to execute the Mark before the day ends — someone else is allowed to do the actual nominating, but the Blackmailed player themself must cast a vote in that nomination, whatever the outcome. Failing to do so kills them the moment the dusk ends. Example: Blackmailed to target the Mayor, a player nominates someone else instead; the Blackmailed player quietly votes yes on a completely different nomination against the Mayor made later that same dusk, and survives — nominating the Mark themselves was never required, only voting for their execution.',
+  ritualist:'Each night, chooses a player other than themself, who receives the Ritual token. If the Demon\'s kill lands on that exact player that same night, the ritual succeeds and the Demon becomes Hexed for their very next action — unless the ritual player was ALSO independently protected from the Demon that night (Monk, Innkeeper, etc.), in which case the kill never really landed and no Hex occurs. On a night the Demon is Hexed, their kill (or, for the Pukka, their poison) is automatically intercepted before it lands — the Ritualist wakes immediately afterward, is told they hexed the Demon, and redirects it to any player of their choice, living or dead, who suffers the effect instead — even the Demon\'s own seat, overriding whatever it could normally never target. Choosing an already-dead player is a legitimate way to waste a Hexed Demon\'s action entirely. Example: the Ritual player dies to the Imp, Hexing it; the following night the Imp is fooled into "killing" someone else, but the Ritualist quietly redirects that kill onto an already-dead seat, and nobody living dies that night at all.',
+};
+ROLES.forEach(r=>{ r.fullInfo = FULL_INFO[r.id] || r.ability; });
+
+const EDITION_COLOR = {
+  tb:{c:'var(--ed-tb)', label:'Trouble Brewing'},
+  sv:{c:'var(--ed-sv)', label:'Sects & Violets'},
+  bmr:{c:'var(--ed-bmr)', label:'Bad Moon Rising'},
+  both:{c:'var(--ed-all)', label:'All Scripts'},
+  fan:{c:'var(--fan)', label:'Fan-made'},
+};
+// r.custom (a wholly invented character - Puppetmaster, Vintner, Mesmerist...)
+// and r.houseRule (an existing toggle that changes how an official-feeling
+// role works - Goblin, Amnesiac, Sleeper Agent) used to share one identical
+// "House Rules" badge, making a brand-new character look mechanically the
+// same as a tweaked rule on top of a real one. Distinct text and color for
+// each now - "Fan-Made" (pink, matches the Fan-made edition badge) vs
+// "House Rule" (blue) - so the two categories read as the different things
+// they are.
+function roleBadgeHtml(r, extraStyle){
+  const style = extraStyle||'';
+  if(r.custom) return `<span class="custom-role-tag" style="background:var(--fan);${style}">Fan-Made</span>`;
+  if(r.houseRule) return `<span class="custom-role-tag" style="background:var(--house);${style}">House Rule</span>`;
+  return '';
+}
+
+const GLOSSARY = [
+  {cat:'Day, Dusk & Night', term:'Day', text:'The town is awake. You\'re free to talk, share suspicions, and build a case toward an execution.'},
+  {cat:'Day, Dusk & Night', term:'Dusk', text:'Still counts as "day" for any ability that says "during the day" — this is when nominations and the execution vote happen. Conversation should stop the moment it opens.'},
+  {cat:'Day, Dusk & Night', term:'Night', text:'You close your eyes and all conversation stops. Depending on your role, you may be woken individually to use your ability in private.'},
+  {cat:'During the Day', term:'Nominate', text:'Any living player may nominate one other living player for execution — you\'re allowed to nominate yourself. Each player can nominate once per dusk, and can only be nominated once per dusk themselves.'},
+  {cat:'During the Day', term:'Vote', text:'After a nomination, every living player gets a chance to vote for or against executing that player — including the accuser and the nominee. You may vote on every nomination you want to — voting isn\'t limited to once per day.'},
+  {cat:'During the Day', term:'Executed', text:'Whoever gets the most votes today — as long as it\'s at least half the living players, rounded up — is executed at dusk. That\'s usually the town\'s one big decision each day.'},
+  {cat:'During the Night', term:'Killed in the night', text:'While the town sleeps, certain evil characters may secretly choose a player to die. You only find out what happened the next morning — there\'s nothing to do about it while it\'s happening, and no talking or peeking allowed.'},
+  {cat:'During the Night', term:'Alive & Dead', text:'Dying doesn\'t take you out of the game. Dead players keep their seat, keep talking, and can still be voted for — but they can no longer nominate anyone, and they only get one more vote (their "ghost vote") for the rest of the game.'},
+  {cat:'During the Night', term:'Ghost vote', text:'Once you die, you keep exactly one more vote to use whenever you want, for the rest of the game. Spend it wisely — you don\'t get another.'},
+  {cat:'Teams & Powers', term:'Townsfolk', text:'A good character whose ability generally helps the town — gathering information, protecting others, or disrupting evil.'},
+  {cat:'Teams & Powers', term:'Outsider', text:'A good character too — but their ability tends to work against the town somehow, even though they\'re on your side.'},
+  {cat:'Teams & Powers', term:'Minion', text:'An evil character who knows who the Demon is from the very first night, and works to protect and support them.'},
+  {cat:'Teams & Powers', term:'Demon', text:'The evil character who can kill at night. Good wins by finding and executing the Demon before it\'s too late.'},
+  {cat:'Teams & Powers', term:'Poisoned / Drunk', text:'Some abilities can secretly stop another character\'s power from working properly — and that player usually has no idea it\'s happening to them.'},
+  {cat:'Getting Help', term:'Storyteller', text:'The person running the game. They know every role and quietly keep things fair and fun — they\'re not on either team.'},
+  {cat:'Getting Help', term:'Ask the Storyteller privately', text:'If you\'re ever confused about your ability or a rule, quietly get the Storyteller\'s attention and ask them one-on-one. It\'s always okay to ask — don\'t guess out loud, and don\'t announce your question to the table.'},
+];
+
+/* ---------------------- STATE (edition filter only) ---------------------- */
+const STORAGE_KEY = 'botc-player-guide-edition';
+const GOBLIN_KEY = 'botc-player-guide-goblin';
+const AMNESIAC_KEY = 'botc-player-guide-amnesiac';
+const SLEEPER_KEY = 'botc-player-guide-sleeperagent';
+const MESMERIST_FLIP_KEY = 'botc-player-guide-mesmerist-flip';
+const FAN_KEY_PREFIX = 'botc-player-guide-fan-'; // one localStorage key per fan role - see fanRolesEnabled below
+const STARTED_KEY = 'botc-player-guide-started';
+// Written only by a scanned/pasted Storyteller session link (see
+// applySessionConfigFromString) - survives a reload so a player who
+// re-opens the page later still sees tonight's locked pool, not a blank
+// manual-toggle view.
+const SESSION_LOCK_KEY = 'botc-player-guide-session-lock';
+let edition = localStorage.getItem(STORAGE_KEY) || 'tb';
+let houseRuleGoblin = localStorage.getItem(GOBLIN_KEY) === '1';
+let houseRuleAmnesiac = localStorage.getItem(AMNESIAC_KEY) === '1';
+let houseRuleSleeperAgent = localStorage.getItem(SLEEPER_KEY) === '1';
+let mesmeristFlipConfirmed = localStorage.getItem(MESMERIST_FLIP_KEY) === '1';
+// Per-role toggle, keyed by role id - e.g. {mesmerist:true} - replaces the old single includeFanRoles boolean.
+let fanRolesEnabled = {};
+ROLES.filter(r=>r.edition==='fan' && !r.disabled).forEach(r=>{
+  fanRolesEnabled[r.id] = localStorage.getItem(FAN_KEY_PREFIX + r.id) === '1';
+});
+let gameStarted = localStorage.getItem(STARTED_KEY) === '1';
+let activeTab = 'roles';
+// Mirrors the Storyteller Tool's own state.manualPoolExclusions - the
+// ACTUAL final stock-role knockout set from a scanned session link, which
+// can differ from what ROLE_EXCLUDES would auto-derive from the toggle
+// list alone (the Setup Wizard's Handpick/Random "replace" step can pick a
+// different removal set than the automatic per-role cascade would have).
+// Empty and inert for a normal, un-scanned device.
+let sessionManualExclusions = new Set();
+// True only once a Storyteller session link has been applied - hides the
+// editable toggle grid entirely (a player scanning a QR code shouldn't be
+// able to un-toggle the Storyteller's own choices) in favor of a read-only
+// "locked by Storyteller" summary, distinct from the ordinary self-locked
+// "Hide When Done Choosing" state.
+let sessionLocked = false;
+
+/* ---------------------- HELPERS ---------------------- */
+function teamColor(team){ return TEAM_COLOR[team]||'var(--hairline)'; }
+function escapeHtml(str){
+  return String(str==null?'':str).replace(/[&<>"']/g, m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+function highlightAbility(text){
+  const escaped = escapeHtml(text);
+  const phrases = ['each night except the first','once per game','each night','the first night','first night','the first time','no vote','immediately','instantly','once only','each day','may'];
+  const pattern = new RegExp('\\b('+phrases.map(p=>p.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|')+')\\b','ig');
+  return escaped.replace(pattern, '<mark class="kw">$1</mark>');
+}
+// Fan roles being merged into an official edition's pool (via the
+// "Include fan-made custom roles" toggle) should still respect a role's
+// own excludeFrom list - a generic per-edition exclusion mechanism, unused
+// by anything currently in ROLES but kept for a future role that genuinely
+// doesn't fit a specific edition.
+function fanRolesFor(ed){
+  return ROLES.filter(r => r.edition==='fan' && !r.disabled && !(r.excludeFrom && r.excludeFrom.includes(ed)));
+}
+// Mirrors the Storyteller Tool's own mesmeristFlipReady() exactly - the
+// Mesmerist is "too powerful" unless something in THIS game's actual
+// script flips a player's true alignment mid-game (Pit-Hag/Barber being
+// merely part of an SV/BMR script is no guarantee either will actually be
+// assigned this time), so its availability is gated on either Sleeper
+// Agent being on or the group's own manual confirmation, not the edition
+// alone. Generalized as r.requiresAlignmentSwap for any future role with
+// the same problem.
+function mesmeristFlipReady(){
+  return !!(houseRuleSleeperAgent || mesmeristFlipConfirmed);
+}
+function enabledFanRolesFor(ed){
+  return fanRolesFor(ed).filter(r => fanRolesEnabled[r.id] && (!r.requiresAlignmentSwap || mesmeristFlipReady()));
+}
+function rolePool(){
+  let pool = ROLES.filter(r => {
+    if(r.id==='goblin' || r.id==='amnesiac' || r.id==='sleeperagent' || r.edition==='fan' || r.disabled) return false;
+    return edition==='both' ? true : r.edition===edition;
+  });
+  const knockedOut = roleIdsKnockedOutByHouseRules();
+  if(knockedOut.size) pool = pool.filter(r=>!knockedOut.has(r.id));
+  if(houseRuleGoblin) pool.push(ROLE_MAP['goblin']);
+  if(houseRuleAmnesiac) pool.push(ROLE_MAP['amnesiac']);
+  if(houseRuleSleeperAgent) pool.push(ROLE_MAP['sleeperagent']);
+  pool = pool.concat(enabledFanRolesFor(edition));
+  return pool;
+}
+
+/* ---------------------- RENDER: HEADER ---------------------- */
+function renderEdition(){
+  const row = document.getElementById('editionRow');
+  const opts = ['tb','sv','bmr','both'];
+  row.innerHTML = opts.map(v=>{
+    const info = EDITION_COLOR[v];
+    return `<div class="chip-select ${edition===v?'active':''}" data-ed="${v}" style="--chip-color:${info.c};">${info.label}</div>`;
+  }).join('');
+  row.style.opacity = sessionLocked ? '.55' : '';
+  row.style.pointerEvents = sessionLocked ? 'none' : '';
+  row.querySelectorAll('.chip-select').forEach(el=>{
+    el.onclick = ()=>{
+      // A scanned Storyteller session link fixes the script along with the
+      // rest of the pool - switching editions here would show roles the
+      // Storyteller never included. Use "Not your session?" to back out.
+      if(sessionLocked) return;
+      edition = el.dataset.ed;
+      localStorage.setItem(STORAGE_KEY, edition);
+      renderEdition();
+      renderRoleList();
+    };
+  });
+}
+
+// Short, deliberately vague taglines for the fan-role toggle boxes - full
+// mechanical detail already lives in each role's own `ability`/fullInfo
+// text on the Roles tab; this card is just "what kind of thing is this"
+// at a glance.
+const TOGGLE_ROLE_META = {
+  goblin: {emoji:'🧌', blurb:'Wins instantly if executed right after opening their defense with the claim.'},
+  amnesiac: {emoji:'🧠', blurb:'Secretly a real Townsfolk, without knowing it.'},
+  sleeperagent: {emoji:'🕶️', blurb:'A dormant Minion identity, hidden even from them.'},
+  mesmerist: {emoji:'🌀', blurb:'Learns a player\'s original alignment each night.'},
+  maskedstranger: {emoji:'🎭', blurb:'May publicly reveal as someone else, once per game.'},
+  puppetmaster: {emoji:'🎎', blurb:'Doubles the votes against a marked player\'s next nomination.'},
+  nightwatchman: {emoji:'🔦', blurb:'May learn about the Demon after it strikes.'},
+  scarecrow: {emoji:'🌾', blurb:'Counts as two players for headcount abilities.'},
+  vintner: {emoji:'🍷', blurb:'Can quietly save a player from death.'},
+  toxicologist: {emoji:'🧪', blurb:'Learns if either of two players is drunk or poisoned.'},
+  exhumist: {emoji:'⚰️', blurb:'Learns a dead player\'s alignment — at their own risk.'},
+  blackmailer: {emoji:'🗞️', blurb:'Forces one player to vote for another, or they die.'},
+  ritualist: {emoji:'🕯️', blurb:'Can hex the Demon into missing, then redirect its kill.'},
+};
+function toggleRoleItems(){
+  return [
+    {role: ROLE_MAP['goblin'], on: houseRuleGoblin},
+    {role: ROLE_MAP['amnesiac'], on: houseRuleAmnesiac},
+    {role: ROLE_MAP['sleeperagent'], on: houseRuleSleeperAgent},
+  ].concat(fanRolesFor(edition).map(r=>({role: r, on: !!fanRolesEnabled[r.id]})));
+}
+// Mirrors the Storyteller Tool's own ROLE_EXCLUDES exactly - see its
+// comment there for the full rationale. Turning one of these ON knocks a
+// STOCK (official TB/SV/BMR) role OUT of the available pool, one-
+// directionally - the stock role has no toggle of its own to flip back, it
+// simply becomes available again once the excluding toggle turns back off.
+// Both apps need identical pairs, or a Storyteller running one and players
+// following along on the other would see different pools.
+const ROLE_EXCLUDES = {
+  goblin: ['saint'],
+  sleeperagent: ['baron','saint'],
+  amnesiac: ['drunk'],
+  maskedstranger: ['recluse'],
+  mesmerist: ['empath'],
+  exhumist: ['undertaker'],
+  puppetmaster: ['witch'],
+  blackmailer: ['cerenovus'],
+  ritualist: ['exorcist'],
+  nightwatchman: ['sage'],
+  vintner: ['monk'],
+  scarecrow: ['chef'],
+  toxicologist: ['investigator'],
+};
+function isRoleToggleOn(rid){
+  if(rid==='goblin') return houseRuleGoblin;
+  if(rid==='amnesiac') return houseRuleAmnesiac;
+  if(rid==='sleeperagent') return houseRuleSleeperAgent;
+  return !!fanRolesEnabled[rid];
+}
+// Single place that flips one toggle's underlying variable and persists it
+// to localStorage - the grid's own per-row click, Select All/None, and the
+// exclusion cascade below all funnel through this.
+function setHouseRoleToggle(rid, on){
+  if(rid==='goblin'){ houseRuleGoblin = on; localStorage.setItem(GOBLIN_KEY, on ? '1' : '0'); }
+  else if(rid==='amnesiac'){ houseRuleAmnesiac = on; localStorage.setItem(AMNESIAC_KEY, on ? '1' : '0'); }
+  else if(rid==='sleeperagent'){ houseRuleSleeperAgent = on; localStorage.setItem(SLEEPER_KEY, on ? '1' : '0'); }
+  else { fanRolesEnabled[rid] = on; localStorage.setItem(FAN_KEY_PREFIX + rid, on ? '1' : '0'); }
+}
+function roleIdsKnockedOutByHouseRules(){
+  const out = new Set();
+  Object.keys(ROLE_EXCLUDES).forEach(rid=>{
+    if(isRoleToggleOn(rid)) ROLE_EXCLUDES[rid].forEach(x=>{ if(!TOGGLE_ROLE_META[x]) out.add(x); });
+  });
+  // Mirrors the Storyteller Tool's own manualPoolExclusions union - see
+  // sessionManualExclusions above for why this can't just be re-derived
+  // from the toggle list.
+  sessionManualExclusions.forEach(x=>out.add(x));
+  return out;
+}
+
+/* ---------------------- STORYTELLER SESSION LOCK ---------------------- */
+// Decodes a "#s=<base64url>" link generated by the Storyteller Tool's own
+// buildSessionConfigString - MUST stay byte-for-byte compatible with that
+// encoding (edition + which toggle roles are on + the final knocked-out
+// stock role ids + the Mesmerist alignment-swap confirmation flag), or a
+// scanned QR code will silently show the wrong pool.
+function applySessionConfigFromString(encoded){
+  try{
+    const b64 = encoded.replace(/-/g,'+').replace(/_/g,'/');
+    const json = decodeURIComponent(escape(atob(b64)));
+    const cfg = JSON.parse(json);
+    if(!cfg || typeof cfg!=='object') return false;
+    edition = ['tb','sv','bmr','both'].includes(cfg.e) ? cfg.e : edition;
+    localStorage.setItem(STORAGE_KEY, edition);
+    Object.keys(TOGGLE_ROLE_META).forEach(id=> setHouseRoleToggle(id, false));
+    (Array.isArray(cfg.h) ? cfg.h : []).forEach(id=>{ if(TOGGLE_ROLE_META[id]) setHouseRoleToggle(id, true); });
+    mesmeristFlipConfirmed = !!cfg.f;
+    localStorage.setItem(MESMERIST_FLIP_KEY, mesmeristFlipConfirmed ? '1' : '0');
+    sessionManualExclusions = new Set(Array.isArray(cfg.x) ? cfg.x : []);
+    sessionLocked = true;
+    gameStarted = true;
+    localStorage.setItem(STARTED_KEY, '1');
+    localStorage.setItem(SESSION_LOCK_KEY, encoded);
+    return true;
+  } catch(e){
+    return false;
+  }
+}
+// Checked once at load, before the first render: a fresh scan in the URL
+// takes priority (a player re-scanning a new QR should always win over
+// whatever an old session left behind); otherwise fall back to whatever
+// session lock was last saved, so a page refresh mid-game doesn't dump the
+// player back into an unlocked, unfamiliar toggle grid.
+function loadSessionLockOnInit(){
+  const m = location.hash.match(/[#&]s=([^&]+)/);
+  if(m && applySessionConfigFromString(m[1])) return;
+  const saved = localStorage.getItem(SESSION_LOCK_KEY);
+  if(saved) applySessionConfigFromString(saved);
+}
+function applyExclusionCascade(rid){
+  (ROLE_EXCLUDES[rid] || []).forEach(excludedId=>{
+    if(TOGGLE_ROLE_META[excludedId] && isRoleToggleOn(excludedId)) setHouseRoleToggle(excludedId, false);
+  });
+}
+function renderHouseRuleCard(){
+  const el = document.getElementById('houseRuleCard');
+  const items = toggleRoleItems();
+
+  if(gameStarted){
+    const onNames = items.filter(i=>i.on).map(i=>i.role.name);
+    const summary = onNames.length ? onNames.join(', ') : 'None';
+    // A scanned Storyteller session link gets a read-only summary with no
+    // Edit button - letting a player toggle their own roles back in would
+    // defeat the whole point of a locked, ST-controlled pool. They can
+    // still back out entirely via "Not your session?" if they scanned the
+    // wrong code.
+    el.innerHTML = sessionLocked ? `
+      <div class="hr-locked">
+        <span>🔒📡 Locked by Storyteller — ${summary}</span>
+        <span class="hr-exit-lock" id="hrExitLock">Not your session?</span>
+      </div>
+    ` : `
+      <div class="hr-locked">
+        <span>🔒 Tonight — ${summary}</span>
+        <button id="hrEdit">Edit</button>
+      </div>
+    `;
+    if(sessionLocked){
+      document.getElementById('hrExitLock').onclick = ()=>{
+        sessionLocked = false;
+        sessionManualExclusions = new Set();
+        gameStarted = false;
+        localStorage.removeItem(SESSION_LOCK_KEY);
+        localStorage.setItem(STARTED_KEY, '0');
+        renderEdition();
+        renderHouseRuleCard();
+        renderRoleList();
+      };
+    } else {
+      document.getElementById('hrEdit').onclick = ()=>{
+        gameStarted = false;
+        localStorage.setItem(STARTED_KEY, '0');
+        renderHouseRuleCard();
+      };
+    }
+    return;
+  }
+
+  el.innerHTML = `
+    <div class="bulk-row">
+      <button class="bulk-btn" id="hrSelectAll">Select All</button>
+      <button class="bulk-btn" id="hrSelectNone">Select None</button>
+    </div>
+    <div class="hr-grid">${items.map(item=>{
+    const r = item.role;
+    const c = teamColor(r.team);
+    const meta = TOGGLE_ROLE_META[r.id] || {};
+    const locked = r.requiresAlignmentSwap && !mesmeristFlipReady();
+    const flipNote = r.requiresAlignmentSwap ? (
+      houseRuleSleeperAgent
+        ? `<div class="hr-mesmerist-flip on">✓ Unlocked by Sleeper Agent</div>`
+        : `<label class="hr-mesmerist-flip"><input type="checkbox" data-mesmerist-flip ${mesmeristFlipConfirmed?'checked':''}> Alignment-swap mechanic (Pit-Hag/Barber/etc.) confirmed in this game's script</label>`
+    ) : '';
+    return `<div class="hr-mini ${item.on?'on':''} ${locked?'locked':''}" style="border-color:${c};">
+      <div class="hr-mini-top">
+        <span class="hr-mini-emoji">${meta.emoji||''}</span>
+        <span class="hr-mini-name">${r.name}</span>
+        <div class="hr-mini-switch ${item.on?'on':''} ${locked?'disabled':''}" data-toggle-role="${r.id}" style="${item.on?'background:'+c+'; border-color:'+c+';':''}"><div class="knob"></div></div>
+      </div>
+      <div class="hr-mini-desc">${meta.blurb||''}</div>
+      ${flipNote}
+    </div>`;
+  }).join('')}</div>
+    <button class="hr-start-btn" id="hrStart">✅ Hide When Done Choosing</button>
+  `;
+  el.querySelectorAll('[data-toggle-role]').forEach(sw=>{
+    sw.onclick = ()=>{
+      const rid = sw.dataset.toggleRole;
+      const role = ROLE_MAP[rid];
+      if(role.requiresAlignmentSwap && !isRoleToggleOn(rid) && !mesmeristFlipReady()) return;
+      const turningOn = !isRoleToggleOn(rid);
+      setHouseRoleToggle(rid, turningOn);
+      if(turningOn) applyExclusionCascade(rid);
+      renderHouseRuleCard();
+      renderRoleList();
+    };
+  });
+  const flipCb = el.querySelector('[data-mesmerist-flip]');
+  if(flipCb){
+    flipCb.onclick = ()=>{
+      mesmeristFlipConfirmed = flipCb.checked;
+      localStorage.setItem(MESMERIST_FLIP_KEY, mesmeristFlipConfirmed ? '1' : '0');
+      if(!mesmeristFlipReady() && isRoleToggleOn('mesmerist')) setHouseRoleToggle('mesmerist', false);
+      renderHouseRuleCard();
+      renderRoleList();
+    };
+  }
+  document.getElementById('hrSelectAll').onclick = ()=>{
+    // Deliberately the "absolute chaos" option - see the Storyteller Tool's
+    // own comment on its matching button for the full rationale.
+    items.forEach(item=>{
+      if(item.role.requiresAlignmentSwap && !mesmeristFlipReady()) return;
+      if(!isRoleToggleOn(item.role.id)){
+        setHouseRoleToggle(item.role.id, true);
+        applyExclusionCascade(item.role.id);
+      }
+    });
+    renderHouseRuleCard();
+    renderRoleList();
+  };
+  document.getElementById('hrSelectNone').onclick = ()=>{
+    items.forEach(item=>{ if(isRoleToggleOn(item.role.id)) setHouseRoleToggle(item.role.id, false); });
+    renderHouseRuleCard();
+    renderRoleList();
+  };
+  document.getElementById('hrStart').onclick = ()=>{
+    gameStarted = true;
+    localStorage.setItem(STARTED_KEY, '1');
+    renderHouseRuleCard();
+  };
+}
+
+document.getElementById('tabRoles').onclick = ()=>{
+  activeTab='roles';
+  document.getElementById('tabRoles').classList.add('active');
+  document.getElementById('tabGlossary').classList.remove('active');
+  document.getElementById('rolesView').style.display='';
+  document.getElementById('glossaryView').style.display='none';
+};
+document.getElementById('tabGlossary').onclick = ()=>{
+  activeTab='glossary';
+  document.getElementById('tabGlossary').classList.add('active');
+  document.getElementById('tabRoles').classList.remove('active');
+  document.getElementById('glossaryView').style.display='';
+  document.getElementById('rolesView').style.display='none';
+};
+
+/* ---------------------- RENDER: ROLE LIST ---------------------- */
+function renderRoleList(){
+  const list = document.getElementById('roleList');
+  const query = (document.getElementById('roleSearch').value||'').trim().toLowerCase();
+  const pool = rolePool().filter(r => !query || r.name.toLowerCase().includes(query));
+  const teams = ['townsfolk','outsider','minion','demon'];
+  const showEditionBadge = edition==='both';
+  let html = '';
+  teams.forEach(team=>{
+    const items = pool.filter(r=>r.team===team);
+    if(!items.length) return;
+    html += `<div class="team-group-title" style="color:${teamColor(team)}">${TEAM_LABEL[team]}</div>`;
+    html += items.map(r=>{
+      const edBadge = (showEditionBadge && r.edition!=='house' && r.edition!=='fan' && EDITION_COLOR[r.edition])
+        ? `<span class="ed-badge" style="background:${EDITION_COLOR[r.edition].c};">${EDITION_COLOR[r.edition].label}</span>` : '';
+      return `
+      <div class="role-row" data-role="${r.id}">
+        <div class="swatch" style="background:${teamColor(r.team)}"></div>
+        <div class="rtext">
+          <div class="rname">${r.name}${edBadge}${roleBadgeHtml(r)}</div>
+          <div class="rpreview">${r.ability}</div>
+        </div>
+        <div class="chev">›</div>
+      </div>
+    `;}).join('');
+  });
+  if(!html){
+    html = `<div class="empty-note">No roles match "${escapeHtml(query)}".</div>`;
+  }
+  list.innerHTML = html;
+  list.querySelectorAll('[data-role]').forEach(row=>{
+    row.onclick = ()=> openRoleReveal(row.dataset.role);
+  });
+}
+document.getElementById('roleSearch').addEventListener('input', renderRoleList);
+
+/* ---------------------- RENDER: GLOSSARY ---------------------- */
+function renderGlossary(){
+  const list = document.getElementById('glossaryList');
+  const cats = [...new Set(GLOSSARY.map(g=>g.cat))];
+  list.innerHTML = cats.map(cat=>{
+    const items = GLOSSARY.filter(g=>g.cat===cat);
+    return `<div class="gloss-group-title">${cat}</div>` + items.map(g=>`
+      <div class="gloss-card">
+        <div class="term">${escapeHtml(g.term)}</div>
+        <p>${escapeHtml(g.text)}</p>
+      </div>
+    `).join('');
+  }).join('');
+}
+
+/* ---------------------- FULLSCREEN ROLE REVEAL ---------------------- */
+function openRoleReveal(roleId){
+  const role = ROLE_MAP[roleId];
+  const root = document.getElementById('modalRoot');
+  let mode = 'short'; // 'short' | 'full'
+
+  function draw(){
+    const text = mode==='full' ? role.fullInfo : role.ability;
+    root.innerHTML = `
+      <div class="present-overlay" id="ovReveal">
+        <div class="present-top">
+          <div class="info-tabs">
+            <div class="info-tab ${mode==='short'?'active':''}" data-mode="short">Short</div>
+            <div class="info-tab ${mode==='full'?'active':''}" data-mode="full">Full Info</div>
+          </div>
+          <button class="present-close" id="closeReveal">&times;</button>
+        </div>
+        <div class="present-content">
+          <div class="p-team" style="color:${teamColor(role.team)}">${TEAM_LABEL[role.team]}</div>
+          <div class="p-role">${role.name}${roleBadgeHtml(role, 'font-size:11px; vertical-align:middle;')}</div>
+          <div class="p-msg">${highlightAbility(text)}</div>
+        </div>
+        <div class="present-bottom"><button id="backToList">Back to list</button></div>
+      </div>
+    `;
+    document.getElementById('closeReveal').onclick = closeReveal;
+    document.getElementById('backToList').onclick = closeReveal;
+    root.querySelectorAll('[data-mode]').forEach(el=>{
+      el.onclick = ()=>{ mode = el.dataset.mode; draw(); };
+    });
+  }
+  draw();
+}
+function closeReveal(){ document.getElementById('modalRoot').innerHTML=''; }
+
+/* ---------------------- INIT ---------------------- */
+loadSessionLockOnInit();
+renderEdition();
+renderHouseRuleCard();
+renderRoleList();
+renderGlossary();
+</script>
+</body>
+</html>
