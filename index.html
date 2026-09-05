@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Town Guide — Blood on the Clocktower (v1.15.30)</title>
+<title>Town Guide — Blood on the Clocktower (v1.15.31)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cinzel+Decorative:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -235,7 +235,7 @@ footer.app{max-width:640px; margin:6px auto 0; padding:10px 16px 0; text-align:c
 <body>
 
 <header class="app">
-  <h1><span class="eye">📖</span> Town Guide <span class="version-tag">v1.15.30</span></h1>
+  <h1><span class="eye">📖</span> Town Guide <span class="version-tag">v1.15.31</span></h1>
   <div class="edition-row" id="editionRow"></div>
   <div id="houseRuleCard"></div>
   <div class="tab-row">
@@ -683,19 +683,24 @@ function rolePool(){
 /* ---------------------- RENDER: HEADER ---------------------- */
 function renderEdition(){
   const row = document.getElementById('editionRow');
+  row.style.opacity = '';
+  row.style.pointerEvents = '';
+  // Session-locked players only need to see the ONE scenario actually in
+  // play tonight - showing all 4 (3 dimmed/inert) just to convey "and not
+  // these others" wastes screen space for information nobody needs to act
+  // on. Unlocked/manual mode still shows the full picker.
+  if(sessionLocked){
+    const info = EDITION_COLOR[edition];
+    row.innerHTML = `<div class="chip-select active" style="--chip-color:${info.c}; cursor:default;">${info.label}</div>`;
+    return;
+  }
   const opts = ['tb','sv','bmr','both'];
   row.innerHTML = opts.map(v=>{
     const info = EDITION_COLOR[v];
     return `<div class="chip-select ${edition===v?'active':''}" data-ed="${v}" style="--chip-color:${info.c};">${info.label}</div>`;
   }).join('');
-  row.style.opacity = sessionLocked ? '.55' : '';
-  row.style.pointerEvents = sessionLocked ? 'none' : '';
   row.querySelectorAll('.chip-select').forEach(el=>{
     el.onclick = ()=>{
-      // A scanned Storyteller session link fixes the script along with the
-      // rest of the pool - switching editions here would show roles the
-      // Storyteller never included. Use "Not your session?" to back out.
-      if(sessionLocked) return;
       edition = el.dataset.ed;
       localStorage.setItem(STORAGE_KEY, edition);
       renderEdition();
@@ -830,14 +835,17 @@ function renderHouseRuleCard(){
   if(gameStarted){
     const onNames = items.filter(i=>i.on).map(i=>i.role.name);
     const summary = onNames.length ? onNames.join(', ') : 'None';
-    // A scanned Storyteller session link gets a read-only summary with no
+    // A scanned Storyteller session link gets a read-only banner with no
     // Edit button - letting a player toggle their own roles back in would
     // defeat the whole point of a locked, ST-controlled pool. They can
     // still back out entirely via "Not your session?" if they scanned the
-    // wrong code.
+    // wrong code. No role-name list here (unlike the self-locked case
+    // below) - those same roles are already visible in the scrollable role
+    // list right underneath, so repeating them just to say "locked" ate up
+    // screen space for nothing new.
     el.innerHTML = sessionLocked ? `
       <div class="hr-locked">
-        <span>🔒📡 Locked by Storyteller — ${summary}</span>
+        <span>🔒📡 Locked by Storyteller</span>
         <span class="hr-exit-lock" id="hrExitLock">Not your session?</span>
       </div>
     ` : `
