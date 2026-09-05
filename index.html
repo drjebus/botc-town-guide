@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Town Guide — Blood on the Clocktower (v1.15.32)</title>
+<title>Town Guide — Blood on the Clocktower (v1.15.33)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cinzel+Decorative:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -171,6 +171,23 @@ main{padding:14px 12px 0; max-width:640px; margin:0 auto;}
 }
 .role-row .chev{color:var(--cream-dim); font-size:18px; flex-shrink:0;}
 .empty-note{color:var(--cream-dim); font-size:13px; font-style:italic; padding:20px 4px; text-align:center;}
+/* Two-column handout layout - matches the physical reference sheet's own
+   two-column printing. Tighter than the single-column search-result rows
+   above (smaller name/preview text, 1-line ability clamp instead of 2)
+   since each column is roughly half the screen width on a phone. */
+.role-cols{display:grid; grid-template-columns:1fr 1fr; gap:0 8px;}
+.role-col{display:flex; flex-direction:column; min-width:0;}
+.role-cols .role-row{padding:9px 8px; gap:8px;}
+.role-cols .role-row .rname{font-size:12.5px;}
+.role-cols .role-row .rpreview{font-size:10px; -webkit-line-clamp:1;}
+.role-cols .role-row .chev{font-size:15px;}
+/* A team with only one role (Trouble Brewing's lone Demon) skips the
+   two-column grid entirely rather than leaving one column empty. */
+.role-col-single{max-width:340px; margin:0 auto;}
+.role-extra-note{
+  font-size:10.5px; text-transform:uppercase; letter-spacing:.07em; font-weight:700;
+  color:var(--cream-dim); margin:10px 0 4px;
+}
 
 /* glossary */
 .gloss-group-title{
@@ -235,7 +252,7 @@ footer.app{max-width:640px; margin:6px auto 0; padding:10px 16px 0; text-align:c
 <body>
 
 <header class="app">
-  <h1><span class="eye">📖</span> Town Guide <span class="version-tag">v1.15.32</span></h1>
+  <h1><span class="eye">📖</span> Town Guide <span class="version-tag">v1.15.33</span></h1>
   <div class="edition-row" id="editionRow"></div>
   <div id="houseRuleCard"></div>
   <div class="tab-row">
@@ -270,7 +287,7 @@ footer.app{max-width:640px; margin:6px auto 0; padding:10px 16px 0; text-align:c
    Unofficial. Trouble Brewing + Sects & Violets only.
    ===================================================================== */
 const TEAM_COLOR = { townsfolk:'var(--townsfolk)', outsider:'var(--outsider)', minion:'var(--minion)', demon:'var(--demon)' };
-const TEAM_LABEL = { townsfolk:'Townsfolk', outsider:'Outsider', minion:'Minion', demon:'Demon' };
+const TEAM_LABEL = { townsfolk:'Townsfolk', outsider:'Outsiders', minion:'Minions', demon:'Demons' };
 
 const ROLES = [
 /* ---------------- TROUBLE BREWING ---------------- */
@@ -965,6 +982,90 @@ document.getElementById('tabGlossary').onclick = ()=>{
 };
 
 /* ---------------------- RENDER: ROLE LIST ---------------------- */
+// The exact order each script's official characters are printed in on the
+// physical reference sheets the Storyteller hands out to players - NOT
+// necessarily this file's own ROLES array insertion order above, which has
+// at least one known mismatch (Trouble Brewing's Minions are entered as
+// Scarlet Woman before Baron, but the real printed sheet - and this list -
+// goes Baron before Scarlet Woman). Split at the midpoint (first half =
+// left column, second half = right) matches the two-column layout of the
+// physical sheets themselves, so a player glancing between their paper
+// handout and this screen finds each role in the same relative spot.
+// Trouble Brewing's exact order (and the left/right split point for every
+// team) came directly from the user; Sects & Violets and Bad Moon Rising
+// follow the same official ordering from the published character sheets,
+// applying the same "first half left, second half right" rule - flagged
+// in this version's changelog as best-effort recall, not independently
+// re-verified against a primary source, in case any one pair needs a swap.
+const ROLE_HANDOUT_ORDER = {
+  tb: {
+    townsfolk: ['washerwoman','librarian','investigator','chef','empath','fortuneteller','undertaker','monk','ravenkeeper','virgin','slayer','soldier','mayor'],
+    outsider: ['butler','drunk','recluse','saint'],
+    minion: ['poisoner','spy','baron','scarletwoman'],
+    demon: ['imp'],
+  },
+  sv: {
+    townsfolk: ['clockmaker','dreamer','snakecharmer','mathematician','flowergirl','towncrier','oracle','savant','seamstress','philosopher','artist','juggler','sage'],
+    outsider: ['mutant','sweetheart','barber','klutz'],
+    minion: ['eviltwin','witch','cerenovus','pithag'],
+    demon: ['fanggu','vigormortis','nodashii','vortox'],
+  },
+  bmr: {
+    townsfolk: ['grandmother','sailor','chambermaid','exorcist','innkeeper','gambler','gossip','courtier','professor','minstrel','tealady','pacifist','fool'],
+    outsider: ['tinker','moonchild','goon','lunatic'],
+    minion: ['godfather','devilsadvocate','assassin','mastermind'],
+    demon: ['po','pukka','shabaloth','zombuul'],
+  },
+};
+// "All Scripts" has no official sheet of its own - "some semblance of
+// order" per the user, so it groups by script (each script's own official
+// order intact) rather than interleaving/alphabetizing everything.
+function handoutOrderForTeam(ed, team){
+  if(ed==='both') return ['tb','sv','bmr'].flatMap(e => ROLE_HANDOUT_ORDER[e][team] || []);
+  return ROLE_HANDOUT_ORDER[ed] ? (ROLE_HANDOUT_ORDER[ed][team] || []) : [];
+}
+function roleRowHtml(r, showEditionBadge){
+  const edBadge = (showEditionBadge && r.edition!=='house' && r.edition!=='fan' && EDITION_COLOR[r.edition])
+    ? `<span class="ed-badge" style="background:${EDITION_COLOR[r.edition].c};">${EDITION_COLOR[r.edition].label}</span>` : '';
+  return `
+    <div class="role-row" data-role="${r.id}">
+      <div class="swatch" style="background:${teamColor(r.team)}"></div>
+      <div class="rtext">
+        <div class="rname">${r.name}${edBadge}${roleBadgeHtml(r)}</div>
+        <div class="rpreview">${r.ability}</div>
+      </div>
+      <div class="chev">›</div>
+    </div>
+  `;
+}
+// Lays out one team's roles to match the physical handout: the official
+// roster in its fixed left/right order, with any active fan/house role for
+// this team (no official position to place it at) appended below as a
+// clearly separate supplementary list rather than guessing where in the
+// two columns it belongs.
+function renderRoleColumnsForTeam(team, items, showEditionBadge){
+  const order = handoutOrderForTeam(edition, team);
+  const byId = {}; items.forEach(r=>{ byId[r.id] = r; });
+  const ordered = order.map(id=>byId[id]).filter(Boolean);
+  const orderedIds = new Set(ordered.map(r=>r.id));
+  const extra = items.filter(r=>!orderedIds.has(r.id));
+
+  let html = '';
+  if(ordered.length <= 1){
+    html += `<div class="role-col-single">${ordered.map(r=>roleRowHtml(r, showEditionBadge)).join('')}</div>`;
+  } else {
+    const mid = Math.ceil(ordered.length/2);
+    const left = ordered.slice(0, mid), right = ordered.slice(mid);
+    html += `<div class="role-cols">
+      <div class="role-col">${left.map(r=>roleRowHtml(r, showEditionBadge)).join('')}</div>
+      <div class="role-col">${right.map(r=>roleRowHtml(r, showEditionBadge)).join('')}</div>
+    </div>`;
+  }
+  if(extra.length){
+    html += `<div class="role-extra-note">Also in this pool</div>` + extra.map(r=>roleRowHtml(r, showEditionBadge)).join('');
+  }
+  return html;
+}
 function renderRoleList(){
   const list = document.getElementById('roleList');
   const query = (document.getElementById('roleSearch').value||'').trim().toLowerCase();
@@ -976,19 +1077,11 @@ function renderRoleList(){
     const items = pool.filter(r=>r.team===team);
     if(!items.length) return;
     html += `<div class="team-group-title" style="color:${teamColor(team)}">${TEAM_LABEL[team]}</div>`;
-    html += items.map(r=>{
-      const edBadge = (showEditionBadge && r.edition!=='house' && r.edition!=='fan' && EDITION_COLOR[r.edition])
-        ? `<span class="ed-badge" style="background:${EDITION_COLOR[r.edition].c};">${EDITION_COLOR[r.edition].label}</span>` : '';
-      return `
-      <div class="role-row" data-role="${r.id}">
-        <div class="swatch" style="background:${teamColor(r.team)}"></div>
-        <div class="rtext">
-          <div class="rname">${r.name}${edBadge}${roleBadgeHtml(r)}</div>
-          <div class="rpreview">${r.ability}</div>
-        </div>
-        <div class="chev">›</div>
-      </div>
-    `;}).join('');
+    // Searching flattens the handout layout - a player typing to find one
+    // specific role wants a quick match list, not a two-column page.
+    html += query
+      ? items.map(r=>roleRowHtml(r, showEditionBadge)).join('')
+      : renderRoleColumnsForTeam(team, items, showEditionBadge);
   });
   if(!html){
     html = `<div class="empty-note">No roles match "${escapeHtml(query)}".</div>`;
