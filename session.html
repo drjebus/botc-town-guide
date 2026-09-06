@@ -19,19 +19,29 @@ body{font-family:'Inter',system-ui,sans-serif;}
 .session-share-overlay{
   position:fixed; inset:0;
   background-size:cover; background-position:center;
-  display:flex; flex-direction:column; justify-content:flex-end; align-items:center;
+  display:flex; flex-direction:column; justify-content:flex-end; align-items:flex-start;
   padding:5vh 4vw; text-align:center; overflow:hidden;
 }
 .session-share-overlay::after{
   content:''; position:absolute; inset:0; z-index:0; pointer-events:none;
   background:linear-gradient(180deg, rgba(5,4,9,0) 42%, rgba(5,4,9,.8) 100%);
 }
-.session-share-bottom{ position:relative; z-index:1; display:flex; flex-direction:column; align-items:center; gap:18px; max-width:70vw; }
+.session-share-bottom{ position:relative; z-index:1; }
 /* Small quiet-zone margin, not a big white card - a scanner needs a plain
    border around the finder patterns to lock on, and busy art directly
    behind the code's edge (e.g. Bad Moon Rising's "Moon wide.png") can
-   otherwise break that even though the code still looks fine on screen. */
-.qr-canvas-wrap{ line-height:0; display:block; background:#fff; padding:14px; border-radius:4px; }
+   otherwise break that even though the code still looks fine on screen.
+   outline:none/tap-highlight:transparent matter MORE here than on the
+   Storyteller Tool's identical popup: this is a bare standalone page with
+   none of that app's global CSS reset, so the browser's own default
+   link-focus ring (a "purple border" was reported, likely a Windows
+   accent-color focus outline) was drawing right at the edge of the code -
+   defeating the quiet zone above just like busy art does, and the actual
+   cause of this exact QR "rendering fine but not scanning." */
+.qr-canvas-wrap{
+  line-height:0; display:block; background:#fff; padding:10px; border-radius:4px;
+  outline:none; border:none; -webkit-tap-highlight-color:transparent;
+}
 .empty-note{
   position:fixed; inset:0; display:flex; align-items:center; justify-content:center;
   color:#b7ae9a; font-size:15px; text-align:center; padding:30px; line-height:1.6;
@@ -683,7 +693,7 @@ if(!cfg){
       <a href="${townGuideUrl}" class="qr-canvas-wrap" id="qrCanvasHolder"></a>
     </div>
   </div>`;
-  new QRCode(document.getElementById('qrCanvasHolder'), {text: townGuideUrl, width: 260, height: 260, correctLevel: QRCode.CorrectLevel.M});
+  new QRCode(document.getElementById('qrCanvasHolder'), {text: townGuideUrl, width: 160, height: 160, correctLevel: QRCode.CorrectLevel.M});
 }
 </script>
 </body>
