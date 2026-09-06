@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Town Guide — Blood on the Clocktower (v1.15.33)</title>
+<title>Town Guide — Blood on the Clocktower (v1.15.34)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cinzel+Decorative:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -81,6 +81,7 @@ header.app h1 .eye{font-size:20px;}
   padding:8px 9px;
 }
 .hr-mini.on{background:linear-gradient(160deg, rgba(201,162,39,.10), var(--panel2));}
+.hr-mini-switchrow{display:flex; justify-content:flex-end; margin-bottom:4px;}
 .hr-mini-top{display:flex; align-items:center; gap:5px; margin-bottom:3px;}
 .hr-mini-emoji{font-size:16px; line-height:1; flex-shrink:0;}
 .hr-mini-name{font-weight:700; font-size:13px; line-height:1.25; flex:1;}
@@ -167,7 +168,6 @@ main{padding:14px 12px 0; max-width:640px; margin:0 auto;}
 .role-row .rname{font-weight:700; font-size:14.5px;}
 .role-row .rpreview{
   font-size:11.5px; color:var(--cream-dim); margin-top:2px; line-height:1.35;
-  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
 }
 .role-row .chev{color:var(--cream-dim); font-size:18px; flex-shrink:0;}
 .empty-note{color:var(--cream-dim); font-size:13px; font-style:italic; padding:20px 4px; text-align:center;}
@@ -179,7 +179,7 @@ main{padding:14px 12px 0; max-width:640px; margin:0 auto;}
 .role-col{display:flex; flex-direction:column; min-width:0;}
 .role-cols .role-row{padding:9px 8px; gap:8px;}
 .role-cols .role-row .rname{font-size:12.5px;}
-.role-cols .role-row .rpreview{font-size:10px; -webkit-line-clamp:1;}
+.role-cols .role-row .rpreview{font-size:10px;}
 .role-cols .role-row .chev{font-size:15px;}
 /* A team with only one role (Trouble Brewing's lone Demon) skips the
    two-column grid entirely rather than leaving one column empty. */
@@ -252,7 +252,7 @@ footer.app{max-width:640px; margin:6px auto 0; padding:10px 16px 0; text-align:c
 <body>
 
 <header class="app">
-  <h1><span class="eye">📖</span> Town Guide <span class="version-tag">v1.15.33</span></h1>
+  <h1><span class="eye">📖</span> Town Guide <span class="version-tag">v1.15.34</span></h1>
   <div class="edition-row" id="editionRow"></div>
   <div id="houseRuleCard"></div>
   <div class="tab-row">
@@ -908,10 +908,12 @@ function renderHouseRuleCard(){
         : `<label class="hr-mesmerist-flip"><input type="checkbox" data-mesmerist-flip ${mesmeristFlipConfirmed?'checked':''}> Alignment-swap mechanic (Pit-Hag/Barber/etc.) confirmed in this game's script</label>`
     ) : '';
     return `<div class="hr-mini ${item.on?'on':''} ${locked?'locked':''}" style="border-color:${c};">
+      <div class="hr-mini-switchrow">
+        <div class="hr-mini-switch ${item.on?'on':''} ${locked?'disabled':''}" data-toggle-role="${r.id}" style="${item.on?'background:'+c+'; border-color:'+c+';':''}"><div class="knob"></div></div>
+      </div>
       <div class="hr-mini-top">
         <span class="hr-mini-emoji">${meta.emoji||''}</span>
         <span class="hr-mini-name">${r.name}</span>
-        <div class="hr-mini-switch ${item.on?'on':''} ${locked?'disabled':''}" data-toggle-role="${r.id}" style="${item.on?'background:'+c+'; border-color:'+c+';':''}"><div class="knob"></div></div>
       </div>
       <div class="hr-mini-desc">${meta.blurb||''}</div>
       ${flipNote}
