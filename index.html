@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Town Guide — Blood on the Clocktower (v2.0.4)</title>
+<title>Town Guide — Blood on the Clocktower (v2.0.5)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cinzel+Decorative:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -252,7 +252,7 @@ footer.app{max-width:640px; margin:6px auto 0; padding:10px 16px 0; text-align:c
 <body>
 
 <header class="app">
-  <h1><span class="eye">📖</span> Town Guide <span class="version-tag">v2.0.4</span></h1>
+  <h1><span class="eye">📖</span> Town Guide <span class="version-tag">v2.0.5</span></h1>
   <div class="edition-row" id="editionRow"></div>
   <div id="houseRuleCard"></div>
   <div class="tab-row">
@@ -438,7 +438,7 @@ const ROLES = [
 {id:'mastermind', name:'Mastermind', team:'minion', edition:'bmr',
   ability:'If the Demon is executed, the game continues for one more day — if a player is executed that day, their team loses instead (good only wins if nobody, or an evil player, is executed).'},
 {id:'po', name:'Po', team:'demon', edition:'bmr',
-  ability:'Each night except the first: may choose a player — they die. May refuse to kill instead; if so, must choose 3 players the following night — they all die.'},
+  ability:'Each night except the first: may choose a player — they die. May refuse to kill instead; if so, must choose 3 players the following night — only one of them dies.'},
 {id:'pukka', name:'Pukka', team:'demon', edition:'bmr',
   ability:'Each night: chooses a player who becomes poisoned. Whoever was poisoned the previous night dies now, and the poison is removed.'},
 {id:'shabaloth', name:'Shabaloth', team:'demon', edition:'bmr',
@@ -552,7 +552,7 @@ const FULL_INFO = {
   devilsadvocate:'Each night, chooses a living player different from the one chosen the previous night; if that player is executed the following day, they survive instead of dying. Example: the town votes to execute a player with a clear majority, but because the Devil\'s Advocate protected them the night before, they walk away alive.',
   assassin:'A single-use ability: once per game, on any night except the first, may choose a player who then dies no matter what — this kill cannot be blocked or reduced by any other character\'s protection. Example: even though the target is protected by a Monk-like ability that same night, the Assassin\'s kill still goes through regardless.',
   mastermind:'Has no active night ability — if the Demon is ever executed, the game doesn\'t end immediately; play continues for one more full day and night. If a player is then executed on that extra day, evil can still lose control of the outcome (good only wins outright if nobody, or only an evil player, is executed that extra day). Example: the town executes the Imp expecting an instant win, only to be told the game continues one more tense round.',
-  po:'Each night except the first, may kill a chosen player as normal — or refuse to kill entirely; if they do, the following night they must choose three players, and all three die at once. Example: Po skips killing on night 3; on night 4, three players die simultaneously as the deferred, amplified consequence.',
+  po:'Each night except the first, may kill a chosen player as normal — or refuse to kill entirely; if they do, the following night they must choose three players, and only one of them actually dies. Example: Po skips killing on night 3; on night 4, three players are named but only one of them dies — the deferred, misdirecting consequence.',
   pukka:'Each night, chooses a player who becomes poisoned; whoever was poisoned the previous night then dies, and their poison is lifted. The kill always lands one full night behind the poisoning, leaving a brief window to potentially save the poisoned player first. Example: poisoned on night 2, a player has all of night 2 and day 3 to be helped before Pukka\'s kill catches up on night 3.',
   shabaloth:'Each night except the first, kills two chosen players at once — targets can even be players who are already dead. Whoever the Shabaloth targeted that night, living or already dead, becomes eligible for the Storyteller to bring back to life — but ONLY at the very start of the following night, and only one of the two at most, never both; the window closes the moment that night ends. Example: on the Second Night the Shabaloth targets the Minstrel (who dies) and the already-dead Pit-Hag. At the start of the Third Night — and only then — the Storyteller may revive either the Minstrel or the Pit-Hag, or neither, but never both. Re-targeting a dead player again on a later night resets the same one-night window on the new pick, so repeatedly trading away a living kill for a shot at reviving someone is a real risk, not a free action.',
   zombuul:'Each night except the first, but only on nights where nobody died during the preceding day, may choose a player who dies. The first time the Zombuul themself would die, they secretly survive instead — but are treated as already dead (no votes, no nominations) until they actually die a second time. Example: executed by the town, the Zombuul appears to die but secretly lives on, unable to vote or nominate, until a later event finally kills them for real.',
@@ -760,8 +760,8 @@ function toggleRoleItems(){
 // Both apps need identical pairs, or a Storyteller running one and players
 // following along on the other would see different pools.
 const ROLE_EXCLUDES = {
-  goblin: ['saint'],
-  sleeperagent: ['baron','saint'],
+  goblin: ['poisoner'],
+  sleeperagent: ['saint'],
   amnesiac: ['drunk'],
   maskedstranger: ['recluse'],
   mesmerist: ['empath'],
@@ -771,7 +771,7 @@ const ROLE_EXCLUDES = {
   ritualist: ['exorcist'],
   nightwatchman: ['sage'],
   vintner: ['monk'],
-  scarecrow: ['chef'],
+  scarecrow: ['butler'],
   toxicologist: ['investigator'],
 };
 function isRoleToggleOn(rid){
