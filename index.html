@@ -4,7 +4,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<title>Town Guide — Blood on the Clocktower (v2.0.10)</title>
+<title>Town Guide — Blood on the Clocktower (v2.0.11)</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Cinzel+Decorative:wght@700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -252,7 +252,7 @@ footer.app{max-width:640px; margin:6px auto 0; padding:10px 16px 0; text-align:c
 <body>
 
 <header class="app">
-  <h1><span class="eye">📖</span> Town Guide <span class="version-tag">v2.0.10</span></h1>
+  <h1><span class="eye">📖</span> Town Guide <span class="version-tag">v2.0.11</span></h1>
   <div class="edition-row" id="editionRow"></div>
   <div id="houseRuleCard"></div>
   <div class="tab-row">
@@ -384,7 +384,7 @@ const ROLES = [
 {id:'cerenovus', name:'Cerenovus', team:'minion', edition:'sv',
   ability:'Each night: chooses a player and a good role — that player must convincingly act mad about being that role the next day, or risk execution.'},
 {id:'pithag', name:'Pit-Hag', team:'minion', edition:'sv',
-  ability:'Each night except the first: may turn a player into a role not currently in play (potentially changing their alignment). If this creates a new Demon, tonight\'s deaths are the Storyteller\'s choice.'},
+  ability:'Each night except the first: may turn a player into a role not currently in play. Alignment never changes — a good player stays good, an evil player stays evil, no matter which role they become. If an already-evil player becomes a Demon this way, tonight\'s deaths are the Storyteller\'s choice.'},
 {id:'fanggu', name:'Fang Gu', team:'demon', edition:'sv',
   ability:'Each night except the first: kills a player. The first time this kill lands on an Outsider, that Outsider becomes the new evil Fang Gu, and the original Fang Gu dies (remaining evil). The new Fang Gu is not told who the Minions are. An extra Outsider is added at setup.'},
 {id:'vigormortis', name:'Vigormortis', team:'demon', edition:'sv',
@@ -525,7 +525,7 @@ const FULL_INFO = {
   eviltwin:'Secretly paired at the start of the game with one good player (their "twin"), who is privately shown that the Evil Twin exists and who it is. While both twins live, good cannot win at all — and if the good twin is executed, evil wins immediately too. Example: aware of the pairing, the good twin might avoid drawing suspicion toward their evil counterpart, since their own death hands evil the game.',
   witch:'Each night, curses a player; if that specific player nominates anyone the next day, they die immediately as a result. This stops working entirely once only 3 players remain, removing one of evil\'s late-game tools right when the game is tightest. Example: a cursed player who doesn\'t realize it nominates a suspect the next day and drops dead on the spot.',
   cerenovus:'Each night, chooses a player and a specific good character; that player must convincingly act "mad" about secretly being that character the next day, or risk execution by Storyteller discretion for not playing along. Example: told to act like the Empath, an unrelated Townsfolk starts dropping fake Empath-style hints all day to avoid suspicion.',
-  pithag:'Each night except the first, may turn a player into any character not currently in play, potentially flipping their alignment — a rare ability that can create a second Demon mid-game. If that happens, the Storyteller decides how that night\'s deaths play out. Example: a suspected Townsfolk is turned into an unused Demon character overnight, and the town has no idea the threat has multiplied.',
+  pithag:'Each night except the first, may turn a player into any character not currently in play. Alignment never changes with the transformation — a good player who becomes a Demon or Minion character is still good, and vice versa; the Storyteller applies the change silently either way and never tells the Pit-Hag whether it actually worked (it doesn\'t, if that character was already in play). The one exception: if an already-EVIL player is turned into an unused Demon character, that\'s a genuine second Demon, and the Storyteller decides how that night\'s deaths play out. Example: a suspected Townsfolk is turned into an unused Demon character overnight but, remaining good, poses no real threat — while a Minion turned into that same unused Demon character would.',
   fanggu:'Each night except the first, kills a player — but the first time that kill lands on an Outsider, that Outsider becomes the new evil Fang Gu, and the original dies in their place, remaining evil (not turning good). The new Fang Gu is not told who the Minions are. Because it needs an Outsider to exist for this to matter, an extra Outsider is added at setup. Example: the first kill hits the Recluse, who becomes the new evil Fang Gu overnight — without being told who the Minions are — while the original is now just an ordinary dead player.',
   vigormortis:'Each night except the first, kills a player — if the kill lands on a Minion, that Minion keeps using their ability from beyond the grave, and a Townsfolk neighbouring the kill becomes poisoned. Because it wants fewer Outsiders distracting from Townsfolk, one fewer Outsider is used at setup. Example: Vigormortis kills a Minion who keeps quietly poisoning or cursing players even after death.',
   nodashii:'Each night except the first, kills a player, and simultaneously poisons both Townsfolk sitting immediately next to the Demon, making their abilities malfunction or lie for as long as No Dashii remains untouched. Example: a Chef and an Undertaker sitting on either side of No Dashii both start quietly receiving false results.',
